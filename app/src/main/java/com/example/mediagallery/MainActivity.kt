@@ -6,6 +6,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
@@ -68,25 +70,26 @@ class MainActivity : AppCompatActivity() {
         })
 
         loadPictures(25)
+    }
 
-        tvList.setOnClickListener {
-            galleryViewModel = ViewModelProviders.of(this)[GalleryViewModel::class.java]
-            val layoutManager = LinearLayoutManager(this)
-            rv.layoutManager = layoutManager
-            //rv.addItemDecoration(SpaceItemDecoration(8))
-            pictures = ArrayList(galleryViewModel.getGallerySize(this))
-            adapter = GalleryAdapter(pictures)
-            rv.adapter = adapter
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
-            rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (layoutManager.findLastVisibleItemPosition() == pictures.lastIndex) {
-                        loadPictures(25)
-                    }
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.change_layout -> {
+                if(item.title == "LIST"){
+                    rv.layoutManager = LinearLayoutManager(this)
+                    item.title = "GRID"
+                }else{
+                    rv.layoutManager = GridLayoutManager(this,3)
+                    item.title = "LIST"
                 }
-            })
-            loadPictures(25)
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun loadPictures(pageSize: Int) {
