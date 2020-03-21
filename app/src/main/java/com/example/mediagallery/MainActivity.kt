@@ -5,34 +5,54 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide.init
 import com.example.mediagallery.adapter.GalleryAdapter
 import com.example.mediagallery.adapter.SpaceItemDecoration
+import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.toolbar.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var adapter: GalleryAdapter
-    private lateinit var galleryViewModel: GalleryViewModel
+    //private lateinit var adapter: GalleryAdapter
+    private val galleryViewModel: GalleryViewModel by viewModels()
 
-    private lateinit var pictures: ArrayList<GalleryPicture>
+    //private lateinit var pictures: ArrayList<GalleryPicture>
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+
+        //galleryViewModel = ViewModelProviders.of(this)[GalleryViewModel::class.java]
+        val layoutManager = GridLayoutManager(this, 3)
+        val galleryAdapter = GalleryAdapter()
+        binding.rv.layoutManager = layoutManager
+
+        binding.rv.adapter = galleryAdapter
+        binding.rv.addItemDecoration(SpaceItemDecoration(8))
+        //binding.rv.adapter = adapter
+
+        galleryViewModel.images.observe(this, Observer <List<GalleryPicture>> { images ->
+            galleryAdapter.submitList(images)
+        } )
+
+        /*adapter.setOnClickListener { galleryPicture ->
+            showToast(galleryPicture.contentUri.toString())
+            Toast.makeText(this,"Hello",Toast.LENGTH_SHORT)
+        }*/
         requestReadStoragePermission()
+
     }
 
     private fun requestReadStoragePermission() {
@@ -43,33 +63,7 @@ class MainActivity : AppCompatActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(arrayOf(readStorage), 3)
-        } else init()
-    }
-
-    private fun init() {
-        galleryViewModel = ViewModelProviders.of(this)[GalleryViewModel::class.java]
-        val layoutManager = GridLayoutManager(this, 3)
-
-        rv.layoutManager = layoutManager
-        rv.addItemDecoration(SpaceItemDecoration(8))
-        pictures = ArrayList(galleryViewModel.getGallerySize(this))
-        adapter = GalleryAdapter(pictures)
-        rv.adapter = adapter
-
-
-        adapter.setOnClickListener { galleryPicture ->
-            showToast(galleryPicture.path)
-        }
-
-        rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (layoutManager.findLastVisibleItemPosition() == pictures.lastIndex) {
-                    loadPictures(25)
-                }
-            }
-        })
-
-        loadPictures(25)
+        } else loadPictures()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -77,14 +71,14 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
             R.id.change_layout -> {
                 if(item.title == "LIST"){
-                    rv.layoutManager = LinearLayoutManager(this)
+                    binding.rv.layoutManager = LinearLayoutManager(this)
                     item.title = "GRID"
                 }else{
-                    rv.layoutManager = GridLayoutManager(this,3)
+                    binding.rv.layoutManager = GridLayoutManager(this,3)
                     item.title = "LIST"
                 }
             }
@@ -92,23 +86,16 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun loadPictures(pageSize: Int) {
-        galleryViewModel.getImagesFromGallery(this, pageSize) {
-            if (it.isNotEmpty()) {
-                pictures.addAll(it)
-                adapter.notifyItemRangeInserted(pictures.size, it.size)
-            }
-            Log.i("GalleryListSize", "${pictures.size}")
-
-        }
-
+    private fun loadPictures() {
+        galleryViewModel.loadImages()
     }
 
     private fun showToast(s: String) = Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            init()
+            loadPictures()
         else {
             showToast("Permission Required to Fetch Gallery.")
             super.onBackPressed()
