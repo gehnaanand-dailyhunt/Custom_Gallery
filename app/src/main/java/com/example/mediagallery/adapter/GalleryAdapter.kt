@@ -34,12 +34,12 @@ class GalleryAdapter() : ListAdapter<GalleryPicture, ImageViewHolder>(GalleryPic
 
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val mediaStoreImage = getItem(position)
-        holder.rootView.tag = mediaStoreImage
+        val galleryPicture = getItem(position)
+        holder.rootView.tag = galleryPicture
         holder.pos = position
 
         Glide.with(holder.imageView)
-            .load(mediaStoreImage.contentUri)
+            .load(galleryPicture.contentUri)
             .thumbnail(0.33f)
             .centerCrop()
             .into(holder.imageView)
