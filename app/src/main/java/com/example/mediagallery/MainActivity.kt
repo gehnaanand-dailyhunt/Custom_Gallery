@@ -1,6 +1,7 @@
 package com.example.mediagallery
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,8 @@ import com.example.mediagallery.adapter.SpaceItemDecoration
 import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
+import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
+import kotlinx.android.synthetic.main.multi_gallery_listitem.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         //galleryViewModel = ViewModelProviders.of(this)[GalleryViewModel::class.java]
         val layoutManager = GridLayoutManager(this, 3)
+
         val galleryAdapter = GalleryAdapter()
         binding.rv.layoutManager = layoutManager
 
@@ -47,10 +51,13 @@ class MainActivity : AppCompatActivity() {
             galleryAdapter.submitList(images)
         } )
 
-        /*adapter.setOnClickListener { galleryPicture ->
-            showToast(galleryPicture.contentUri.toString())
-            Toast.makeText(this,"Hello",Toast.LENGTH_SHORT)
-        }*/
+        galleryAdapter.setOnClickListener { galleryPicture, pos ->
+            showToast(galleryPicture.contentUri.toString() + image.id)
+            //Toast.makeText(this,"Hello",Toast.LENGTH_SHORT)
+            val intent = Intent(this, ScreenSlidePagerActivity::class.java)
+            intent.putExtra("position", pos);
+            startActivity(intent)
+        }
         requestReadStoragePermission()
 
     }
@@ -100,5 +107,10 @@ class MainActivity : AppCompatActivity() {
             showToast("Permission Required to Fetch Gallery.")
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.rv.adapter = null
     }
 }
