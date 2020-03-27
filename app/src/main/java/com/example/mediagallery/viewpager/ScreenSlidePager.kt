@@ -75,7 +75,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
 
             val vh = ImageViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.view_pager,
+                    R.layout.detail_image,
                     parent,
                     false
                 )

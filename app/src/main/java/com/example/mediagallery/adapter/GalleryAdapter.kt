@@ -44,9 +44,6 @@ class GalleryAdapter() : ListAdapter<GalleryPicture, ImageViewHolder>(GalleryPic
             .centerCrop()
             .into(holder.imageView)
 
-        holder.itemView.image.setOnClickListener {
-
-        }
 
     }
 }
