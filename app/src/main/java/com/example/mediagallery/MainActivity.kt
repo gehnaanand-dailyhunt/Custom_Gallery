@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediagallery.adapter.GalleryAdapter
 import com.example.mediagallery.adapter.SpaceItemDecoration
+import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             showToast(galleryPicture.contentUri.toString() + image.id)
             //Toast.makeText(this,"Hello",Toast.LENGTH_SHORT)
             val intent = Intent(this, ScreenSlidePagerActivity::class.java)
-            intent.putExtra("position", pos);
+            intent.putExtra("position", pos)
             startActivity(intent)
         }
         requestReadStoragePermission()
@@ -88,6 +89,10 @@ class MainActivity : AppCompatActivity() {
                     binding.rv.layoutManager = GridLayoutManager(this,3)
                     item.title = "LIST"
                 }
+            }
+            R.id.camera -> {
+                val intent = Intent(this, Camera::class.java)
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)

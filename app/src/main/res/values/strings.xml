@@ -2,4 +2,5 @@
     <string name="app_name">Media Gallery</string>
     <string name="txt_gallery">Gallery</string>
     <string name="txt_list">LIST</string>
+    <string name="camera_btn">Camera</string>
 </resources>
