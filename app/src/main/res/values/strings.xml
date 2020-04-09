@@ -3,4 +3,8 @@
     <string name="txt_gallery">Gallery</string>
     <string name="txt_list">LIST</string>
     <string name="camera_btn">Camera</string>
+    <string name="title">Title</string>
+    <string name="tag">Tags</string>
+    <string name="like_button">Like</string>
+    <string name="image">Image</string>
 </resources>

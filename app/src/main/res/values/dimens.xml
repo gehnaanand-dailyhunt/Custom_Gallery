@@ -2,4 +2,5 @@
 <resources>
     <dimen name="padding_medium">12dp</dimen>
     <dimen name="padding_moderate">8dp</dimen>
+    <dimen name="cameraui">50dp</dimen>
 </resources>

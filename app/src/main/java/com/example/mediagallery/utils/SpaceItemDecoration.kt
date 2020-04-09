@@ -1,4 +1,4 @@
-package com.example.mediagallery.adapter
+package com.example.mediagallery.utils
 
 import android.graphics.Rect
 import android.view.View

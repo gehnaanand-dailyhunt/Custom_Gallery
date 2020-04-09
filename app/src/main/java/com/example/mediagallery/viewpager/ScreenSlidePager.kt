@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.example.mediagallery.R
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
+import com.example.mediagallery.viewmodel.ImageViewModel
 
 
 class ScreenSlidePagerActivity : AppCompatActivity() {
@@ -24,6 +25,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
 
     private val viewModel: GalleryViewModel by viewModels()
+    private val imageViewModel: ImageViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +34,21 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.pager)
         viewPager.setPageTransformer(ZoomOutPageTransformer())
 
-        viewModel.loadImages()
-        viewModel.images.observe(this, Observer<List<GalleryPicture>> { images ->
-            viewPager.adapter = ScreenSlidePagerAdapter(this, images)
+        val isCustomGallery = intent.getBooleanExtra("customGallery", false)
+        if(isCustomGallery)
+        {
+            imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{
+                images -> viewPager.adapter = ScreenSlidePagerAdapter(this, images)
+            })
+        }
+        else {
+            viewModel.loadImages()
+            viewModel.images.observe(this, Observer<List<GalleryPicture>> { images ->
+                viewPager.adapter = ScreenSlidePagerAdapter(this, images)
 
-        })
+            })
+        }
+
     }
 
     fun setInitialPos() {

@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediagallery.adapter.GalleryAdapter
-import com.example.mediagallery.adapter.SpaceItemDecoration
+import com.example.mediagallery.utils.SpaceItemDecoration
 import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.model.GalleryPicture
@@ -45,7 +45,11 @@ class MainActivity : AppCompatActivity() {
         binding.rv.layoutManager = layoutManager
 
         binding.rv.adapter = galleryAdapter
-        binding.rv.addItemDecoration(SpaceItemDecoration(8))
+        binding.rv.addItemDecoration(
+            SpaceItemDecoration(
+                8
+            )
+        )
         //binding.rv.adapter = adapter
 
         galleryViewModel.images.observe(this, Observer <List<GalleryPicture>> { images ->
@@ -53,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         } )
 
         galleryAdapter.setOnClickListener { galleryPicture, pos ->
-            showToast(galleryPicture.contentUri.toString() + image.id)
+            showToast(galleryPicture.contentUri + image.id)
             //Toast.makeText(this,"Hello",Toast.LENGTH_SHORT)
             val intent = Intent(this, ScreenSlidePagerActivity::class.java)
             intent.putExtra("position", pos)
@@ -93,6 +97,12 @@ class MainActivity : AppCompatActivity() {
             R.id.camera -> {
                 val intent = Intent(this, Camera::class.java)
                 startActivity(intent)
+            }
+            R.id.customGallery -> {
+                startActivity(Intent(this, CustomGalleryActivity::class.java))
+            }
+            R.id.liked -> {
+                startActivity((Intent(this,LikedActivity::class.java)))
             }
         }
         return super.onOptionsItemSelected(item)

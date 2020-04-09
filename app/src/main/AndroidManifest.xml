@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".viewpager.ScreenSlidePagerActivity"/>
         <activity android:name=".camera.Camera"/>
+        <activity android:name=".CustomGalleryActivity"/>
+        <activity android:name=".LikedActivity"/>
     </application>
 
 </manifest>
