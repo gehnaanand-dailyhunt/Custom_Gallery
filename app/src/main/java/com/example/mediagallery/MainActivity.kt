@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
-        //galleryViewModel = ViewModelProviders.of(this)[GalleryViewModel::class.java]
+        //galleryViewModel = ViewModelProviders.of(this)[GalleryViewModel::class.java]d
         val layoutManager = GridLayoutManager(this, 3)
 
         val galleryAdapter = GalleryAdapter()
