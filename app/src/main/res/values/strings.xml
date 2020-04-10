@@ -1,10 +1,15 @@
 <resources>
     <string name="app_name">Media Gallery</string>
     <string name="txt_gallery">Gallery</string>
+    <string name="custom_gallery">Custom Gallery</string>
     <string name="txt_list">LIST</string>
     <string name="camera_btn">Camera</string>
     <string name="title">Title</string>
     <string name="tag">Tags</string>
     <string name="like_button">Like</string>
     <string name="image">Image</string>
+
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 </resources>

@@ -10,9 +10,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediagallery.adapter.GalleryAdapter
@@ -22,19 +31,34 @@ import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.multi_gallery_listitem.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     //private lateinit var adapter: GalleryAdapter
     private val galleryViewModel: GalleryViewModel by viewModels()
 
     //private lateinit var pictures: ArrayList<GalleryPicture>
     private lateinit var binding: ActivityMainBinding
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    //lateinit var toolbar: Toolbar
+    lateinit var drawerLayout: DrawerLayout
+    //lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.navigation_view)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        drawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        navView.setNavigationItemSelectedListener(this)
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
@@ -65,8 +89,29 @@ class MainActivity : AppCompatActivity() {
         }
         requestReadStoragePermission()
 
+
+
     }
 
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.nav_gallery -> {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+            R.id.nav_camera -> {
+                startActivity(Intent(this, Camera::class.java))
+            }
+            R.id.nav_custom_gallery -> {
+                startActivity(Intent(this, CustomGalleryActivity::class.java))
+            }
+            R.id.nav_like -> {
+                startActivity(Intent(this, LikedActivity::class.java))
+            }
+
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
     private fun requestReadStoragePermission() {
         val readStorage = Manifest.permission.READ_EXTERNAL_STORAGE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
