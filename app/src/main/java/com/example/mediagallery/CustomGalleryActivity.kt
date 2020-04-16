@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediagallery.adapter.CustomGalleryAdapter
 import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
+import com.example.mediagallery.utils.SpaceItemDecoration
 import com.example.mediagallery.utils.TopSpacingItemDecoration
 import com.example.mediagallery.viewmodel.ImageViewModel
 import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
@@ -26,15 +27,36 @@ class CustomGalleryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
-        val customGalleryAdapter = CustomGalleryAdapter()
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+
+        binding.navView.selectedItemId = R.id.nav_custom_gallery
+        binding.navView.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.nav_gallery -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+                R.id.nav_camera -> {
+                    startActivity(Intent(this, Camera::class.java))
+                }
+                R.id.nav_custom_gallery -> {
+                    startActivity(Intent(this, CustomGalleryActivity::class.java))
+                }
+                R.id.nav_like -> {
+                    startActivity(Intent(this, LikedActivity::class.java))
+                }
+
+            }
+            return@setOnNavigationItemSelectedListener true
+        }
+
+        val customGalleryAdapter = CustomGalleryAdapter()
         binding.rv.layoutManager = GridLayoutManager(this, 3)
         binding.rv.adapter = customGalleryAdapter
         binding.rv.addItemDecoration(
-            TopSpacingItemDecoration(10)
+            SpaceItemDecoration(4)
         )
         viewModel.allPhotos.observe(this, Observer { photos ->
-        customGalleryAdapter.submitList(photos)
+            customGalleryAdapter.submitList(photos)
         })
 
         customGalleryAdapter.setOnClickListenerImage { _, pos ->
@@ -63,16 +85,6 @@ class CustomGalleryActivity : AppCompatActivity() {
                     binding.rv.layoutManager = GridLayoutManager(this,3)
                     item.title = "LIST"
                 }
-            }
-            R.id.camera -> {
-                val intent = Intent(this, Camera::class.java)
-                startActivity(intent)
-            }
-            R.id.gallery -> {
-                startActivity(Intent(this, MainActivity::class.java))
-            }
-            R.id.liked -> {
-                startActivity(Intent(this, LikedActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)

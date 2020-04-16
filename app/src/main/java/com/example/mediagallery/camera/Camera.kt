@@ -39,6 +39,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.camera)
 
+        supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
         binding = DataBindingUtil.setContentView(this,R.layout.camera)
         viewFinder = binding.viewFinder

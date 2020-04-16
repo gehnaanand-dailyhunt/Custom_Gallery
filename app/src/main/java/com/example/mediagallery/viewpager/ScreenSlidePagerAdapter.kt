@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mediagallery.R
 import com.example.mediagallery.model.GalleryPicture
+import kotlinx.android.extensions.LayoutContainer
 
 class ScreenSlidePagerAdapter(private val context: Context, private val galleryPicture: List<GalleryPicture>) : RecyclerView.Adapter<ImageViewHolder>() {
     private val flag: Boolean = true
@@ -28,6 +30,23 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+        /*val galleryPicture = getItem(position)
+        holder.pos = position
+        holder.rootView.tag = galleryPicture
+        holder._title.text = galleryPicture.title
+        holder._tags.text = galleryPicture.tag
+
+        if(galleryPicture.isLiked){
+            holder._like.setImageResource(R.drawable.ic_toast_like)
+        }else {
+            holder._like.setImageResource(R.drawable.ic_toast_unlike)
+        }
+
+        holder.like.setOnClickListener {
+            galleryPicture.isLiked = !galleryPicture.isLiked
+            onClickLike(galleryPicture)
+            notifyDataSetChanged()
+        }*/
 
         val image = galleryPicture[position]
         Glide.with(holder.imageView)
@@ -42,7 +61,8 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
         (context as ScreenSlidePagerActivity).setInitialPos()
     }
 }
-class ImageViewHolder( containerView: View) : RecyclerView.ViewHolder(containerView)
+class ImageViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 {
     val imageView: ImageView = containerView.findViewById(R.id.image)
+
 }

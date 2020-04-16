@@ -27,6 +27,27 @@ class LikedActivity: AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        binding.navView.selectedItemId = R.id.nav_like
+        binding.navView.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.nav_gallery -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+                R.id.nav_camera -> {
+                    startActivity(Intent(this, Camera::class.java))
+                }
+                R.id.nav_custom_gallery -> {
+                    startActivity(Intent(this, CustomGalleryActivity::class.java))
+                }
+                R.id.nav_like -> {
+                    startActivity(Intent(this, LikedActivity::class.java))
+                }
+
+            }
+            return@setOnNavigationItemSelectedListener true
+        }
+
         val customGalleryAdapter = CustomGalleryAdapter()
         binding.rv.layoutManager = GridLayoutManager(this,3)
         binding.rv.adapter = customGalleryAdapter
@@ -67,16 +88,7 @@ class LikedActivity: AppCompatActivity() {
                     item.title = "LIST"
                 }
             }
-            R.id.camera -> {
-                val intent = Intent(this, Camera::class.java)
-                startActivity(intent)
-            }
-            R.id.customGallery -> {
-                startActivity(Intent(this,CustomGalleryActivity::class.java))
-            }
-            R.id.gallery -> {
-                startActivity(Intent(this, MainActivity::class.java))
-            }
+
         }
         return super.onOptionsItemSelected(item)
     }

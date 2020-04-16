@@ -40,6 +40,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
             imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{
                 images -> viewPager.adapter = ScreenSlidePagerAdapter(this, images)
             })
+
         }
         else {
             viewModel.loadImages()
