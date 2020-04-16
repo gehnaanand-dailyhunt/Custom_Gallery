@@ -13,13 +13,13 @@ class PhotosViewModel : ViewModel() {
     private val mutablePhotosListLiveData = MutableLiveData<List<Photo>>()
     val photosListLiveData: LiveData<List<Photo>> = mutablePhotosListLiveData
 
-    var photosAdapter = PhotoAdapter()
+    //var photosAdapter = PhotoAdapter()
     var method =  "flickr.photos.search"
     var api_key = "5e97710be9ddf23a1c64c5feadf3d036"
     var format = "json"
     var nojsoncallback = 1
 
-    fun loadPhotos(s : String): LiveData<List<Photo>> {
+    fun loadPhotos(s:String): LiveData<List<Photo>> {
         viewModelScope.launch {
             val searchResponse = WebClient.client.fetchImages(method,api_key,format,nojsoncallback,1,s)
             val photosList = searchResponse.photos.photo.map { photo ->

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -25,20 +26,19 @@ class PhotosActivity : AppCompatActivity() {
         val photoAdapter = PhotoAdapter()
         val search_et = findViewById(R.id.search_editText) as EditText
         val string = search_et.text.toString()
-        photosRecyclerView.adapter = photosViewModel.photosAdapter
+        photosRecyclerView.adapter = photoAdapter
         photosRecyclerView.layoutManager = GridLayoutManager(this, 3)
 
         Log.i("0000","Working")
         val button = findViewById(R.id.button_search) as Button
         button.setOnClickListener {
+            Toast.makeText(this,string,Toast.LENGTH_SHORT).show()
             photosViewModel.loadPhotos(string).observe(this,
                 Observer<List<Photo>> { list ->
-                    with(photosViewModel.photosAdapter) {
                         photoAdapter.submitList(list)
                         //photos.clear()
                         //photos.addAll(list)
-                        notifyDataSetChanged()
-                    }
+                        //notifyDataSetChanged()
                 })
         }
 
