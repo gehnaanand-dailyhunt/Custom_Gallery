@@ -30,8 +30,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        app:labelVisibilityMode="selected"
-        android:visibility="visible"/>
+        app:labelVisibilityMode="selected" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -146,7 +147,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.search -> {
-                startActivity(Intent(this,PhotosActivity::class.java))
+                Log.i("Activity","Work")
+                startActivity(Intent(applicationContext,PhotosActivity::class.java))
+                Log.i("Activity","Working")
             }
         }
         return super.onOptionsItemSelected(item)
