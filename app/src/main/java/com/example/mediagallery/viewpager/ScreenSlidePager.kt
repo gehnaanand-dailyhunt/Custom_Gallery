@@ -21,6 +21,7 @@ import com.example.mediagallery.flickr.viewmodel.PhotosViewModel
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewmodel.ImageViewModel
+import kotlinx.android.synthetic.main.post_list_item.*
 
 
 class ScreenSlidePagerActivity : AppCompatActivity() {
@@ -30,14 +31,16 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
     private val viewModel: GalleryViewModel by viewModels()
     private val imageViewModel: ImageViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_pager)
 
-        val customGalleryAdapter = ScreenSlidePagerAdapter()
+        //val customGalleryAdapter = ScreenSlidePagerAdapter(this)
+        var screenSlidePagerAdapter: ScreenSlidePagerAdapter
         viewPager = findViewById(R.id.pager)
         viewPager.setPageTransformer(ZoomOutPageTransformer())
-        viewPager.adapter = customGalleryAdapter
+        //viewPager.adapter = customGalleryAdapter
 
 
         val activity_name = intent.getIntExtra("Activity", 1)
@@ -46,41 +49,47 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
             1 -> {
                 viewModel.loadImages()
                 viewModel.images.observe(this, Observer<List<GalleryPicture>> { images ->
-                    //viewPager.adapter = ScreenSlidePagerAdapter(this, images)
-                    customGalleryAdapter.submitList(images)
-
+                    viewPager.adapter = ScreenSlidePagerAdapter(this, images)
                 })
             }
             //Custom Gallery
             2 -> {
                 imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
-                    //viewPager.adapter = ScreenSlidePagerAdapter(this, images)
-                    customGalleryAdapter.submitList(images)
+                    screenSlidePagerAdapter = ScreenSlidePagerAdapter(this,images)
+                    viewPager.adapter = screenSlidePagerAdapter
+                    screenSlidePagerAdapter.setOnClickListenerLike { image ->
+                        imageViewModel.update(image)
+                    }
+
                 })
             }
             //Liked Activity
             3 -> {
                 imageViewModel.likedPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
-                    //viewPager.adapter = ScreenSlidePagerAdapter(this, images)
-                    customGalleryAdapter.submitList(images)
+                    screenSlidePagerAdapter = ScreenSlidePagerAdapter(this,images)
+                    viewPager.adapter = screenSlidePagerAdapter
+                    screenSlidePagerAdapter.setOnClickListenerLike { image ->
+                        imageViewModel.update(image)
+                    }
+
                 })
             }
         }
 
-        customGalleryAdapter.setOnClickListenerLike {
-                galleryPicture -> imageViewModel.update(galleryPicture)
-        }
+        /*screenSlidePagerAdapter.setOnClickListenerLike { image ->
+            imageViewModel.update(image)
+        }*/
+
+        /*customGalleryAdapter.setOnClickListener{ image, pos ->
+            Toast.makeText(this, image.title, Toast.LENGTH_SHORT)
+        }*/
 
     }
 
     fun setInitialPos() {
         val pos: Int = intent.getIntExtra("position", 0)
-
         if(pos!= 0) {
             viewPager.setCurrentItem(pos,false)
-
         }
-
     }
-
 }

@@ -1,23 +1,22 @@
 package com.example.mediagallery.viewpager
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mediagallery.R
 import com.example.mediagallery.model.GalleryPicture
 import kotlinx.android.extensions.LayoutContainer
 
-class ScreenSlidePagerAdapter : ListAdapter<GalleryPicture, ImageViewHolder>(GalleryPicture.DiffCallback)
-    //(private val context: Context, private val galleryPicture: List<GalleryPicture>) : RecyclerView.Adapter<ImageViewHolder>()
+class ScreenSlidePagerAdapter(private val context: Context, private val galleryPicture: List<GalleryPicture>) : RecyclerView.Adapter<ImageViewHolder>()
 {
-
     private lateinit var onClickLike : (GalleryPicture) -> Unit
+
     fun setOnClickListenerLike(onClick: (GalleryPicture) -> Unit){
         this.onClickLike = onClick
     }
@@ -34,27 +33,10 @@ class ScreenSlidePagerAdapter : ListAdapter<GalleryPicture, ImageViewHolder>(Gal
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        /*val galleryPicture = getItem(position)
+        val image = galleryPicture[position]
+        holder.galleryPicture = image
         holder.pos = position
-        holder.rootView.tag = galleryPicture
-        holder._title.text = galleryPicture.title
-        holder._tags.text = galleryPicture.tag
-
-        if(galleryPicture.isLiked){
-            holder._like.setImageResource(R.drawable.ic_toast_like)
-        }else {
-            holder._like.setImageResource(R.drawable.ic_toast_unlike)
-        }
-
-        holder.like.setOnClickListener {
-            galleryPicture.isLiked = !galleryPicture.isLiked
-            onClickLike(galleryPicture)
-            notifyDataSetChanged()
-        }*/
-
-        val image = getItem(position)
-        holder.pos = position
-        holder.rootView.tag = image
+        //holder.rootView.tag = image
         holder.image_title.text = image.title
         holder.image_tags.text = image.tag
 
@@ -64,26 +46,32 @@ class ScreenSlidePagerAdapter : ListAdapter<GalleryPicture, ImageViewHolder>(Gal
             holder.image_like.setImageResource(R.drawable.ic_toast_unlike)
         }
 
+        Log.i("DDDD", position.toString())
         holder.image_like.setOnClickListener {
             image.isLiked = !image.isLiked
             onClickLike(image)
             notifyDataSetChanged()
         }
+
+
         Glide.with(holder.imageView)
             .load(image.contentUri)
-            .thumbnail(0.33f)
-            .centerCrop()
             .into(holder.imageView)
     }
 
-    /*override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         (context as ScreenSlidePagerActivity).setInitialPos()
-    }*/
+    }
+
+    override fun getItemCount(): Int {
+        return galleryPicture.size
+    }
 }
 class ImageViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 {
     val rootView = containerView
+    lateinit var galleryPicture: GalleryPicture
     val imageView: ImageView = containerView.findViewById(R.id.image)
     var pos:Int? = null
     val image_title: TextView = containerView.findViewById(R.id.title)
