@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
             //Toast.makeText(this,"Hello",Toast.LENGTH_SHORT)
             val intent = Intent(this, ScreenSlidePagerActivity::class.java)
             intent.putExtra("position", pos)
+            intent.putExtra("Activity", 1)
             startActivity(intent)
         }
         requestReadStoragePermission()
@@ -100,25 +101,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    /*override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.nav_gallery -> {
-                startActivity(Intent(this, MainActivity::class.java))
-            }
-            R.id.nav_camera -> {
-                startActivity(Intent(this, Camera::class.java))
-            }
-            R.id.nav_custom_gallery -> {
-                startActivity(Intent(this, CustomGalleryActivity::class.java))
-            }
-            R.id.nav_like -> {
-                startActivity(Intent(this, LikedActivity::class.java))
-            }
-
-        }
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }*/
     private fun requestReadStoragePermission() {
         val readStorage = Manifest.permission.READ_EXTERNAL_STORAGE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
@@ -147,9 +129,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.search -> {
-                Log.i("Activity","Work")
                 startActivity(Intent(applicationContext,PhotosActivity::class.java))
-                Log.i("Activity","Working")
             }
         }
         return super.onOptionsItemSelected(item)

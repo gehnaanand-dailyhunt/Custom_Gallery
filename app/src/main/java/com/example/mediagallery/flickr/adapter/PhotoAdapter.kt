@@ -35,7 +35,7 @@ class PhotoAdapter() :  ListAdapter<Photo, ImageViewHolder3>(
     override fun onBindViewHolder(holder: ImageViewHolder3, position: Int) {
 
         val flickerPhoto = getItem(position)
-        holder.pos=position
+        holder.pos = position
         holder.rootView.tag = flickerPhoto
         Glide.with(holder.imageView)
             .load(flickerPhoto?.url)
@@ -44,9 +44,7 @@ class PhotoAdapter() :  ListAdapter<Photo, ImageViewHolder3>(
             .into(holder.imageView)
     }
 }
-/**
- * Basic [RecyclerView.ViewHolder] for our gallery.
- */
+
 class ImageViewHolder3( override val containerView: View) :    RecyclerView.ViewHolder(containerView),
     LayoutContainer {
     val rootView = containerView
@@ -54,31 +52,4 @@ class ImageViewHolder3( override val containerView: View) :    RecyclerView.View
     val imageView: ImageView = containerView.findViewById(R.id.imageView)
 
 }
-/*class PhotosAdapter(val photos: MutableList<Photo> = mutableListOf()) : RecyclerView.Adapter<PhotosAdapter.PhotosViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosViewHolder {
-        return PhotosViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.flickr_photo,
-                parent,
-                false
-            )
-        )
-    }
 
-    override fun getItemCount(): Int = photos.size
-
-    override fun onBindViewHolder(holder: PhotosViewHolder, position: Int) {
-        holder.bind(photos[position])
-    }
-
-    inner class PhotosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(photo: Photo) {
-            Glide.with(itemView.imageView)
-                .load(photo.url)
-                .thumbnail(0.33f)
-                .centerCrop()
-                .into(itemView.imageView)
-            //Picasso.get().load(photo.url).into(itemView.imageView)
-        }
-    }
-}*/

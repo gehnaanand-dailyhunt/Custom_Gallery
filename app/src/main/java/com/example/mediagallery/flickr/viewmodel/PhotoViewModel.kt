@@ -21,7 +21,7 @@ class PhotosViewModel : ViewModel() {
 
     fun loadPhotos(s:String): LiveData<List<Photo>> {
         viewModelScope.launch {
-            val searchResponse = WebClient.client.fetchImages(method,api_key,format,nojsoncallback,1,s)
+            val searchResponse = WebClient.client.fetchImages(method,api_key,format,nojsoncallback,2,s)
             val photosList = searchResponse.photos.photo.map { photo ->
                 Photo(
                     id = photo.id,

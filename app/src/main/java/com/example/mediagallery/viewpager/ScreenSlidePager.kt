@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.mediagallery.R
+import com.example.mediagallery.flickr.model.Photo
+import com.example.mediagallery.flickr.viewmodel.PhotosViewModel
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewmodel.ImageViewModel
@@ -31,23 +34,41 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_pager)
 
+        val customGalleryAdapter = ScreenSlidePagerAdapter()
         viewPager = findViewById(R.id.pager)
         viewPager.setPageTransformer(ZoomOutPageTransformer())
+        viewPager.adapter = customGalleryAdapter
 
-        val isCustomGallery = intent.getBooleanExtra("customGallery", false)
-        if(isCustomGallery)
-        {
-            imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{
-                images -> viewPager.adapter = ScreenSlidePagerAdapter(this, images)
-            })
 
+        val activity_name = intent.getIntExtra("Activity", 1)
+        when(activity_name){
+            //Main Activity
+            1 -> {
+                viewModel.loadImages()
+                viewModel.images.observe(this, Observer<List<GalleryPicture>> { images ->
+                    //viewPager.adapter = ScreenSlidePagerAdapter(this, images)
+                    customGalleryAdapter.submitList(images)
+
+                })
+            }
+            //Custom Gallery
+            2 -> {
+                imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
+                    //viewPager.adapter = ScreenSlidePagerAdapter(this, images)
+                    customGalleryAdapter.submitList(images)
+                })
+            }
+            //Liked Activity
+            3 -> {
+                imageViewModel.likedPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
+                    //viewPager.adapter = ScreenSlidePagerAdapter(this, images)
+                    customGalleryAdapter.submitList(images)
+                })
+            }
         }
-        else {
-            viewModel.loadImages()
-            viewModel.images.observe(this, Observer<List<GalleryPicture>> { images ->
-                viewPager.adapter = ScreenSlidePagerAdapter(this, images)
 
-            })
+        customGalleryAdapter.setOnClickListenerLike {
+                galleryPicture -> imageViewModel.update(galleryPicture)
         }
 
     }

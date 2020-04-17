@@ -49,7 +49,7 @@ class LikedActivity: AppCompatActivity() {
         }
 
         val customGalleryAdapter = CustomGalleryAdapter()
-        binding.rv.layoutManager = GridLayoutManager(this,3)
+        binding.rv.layoutManager = GridLayoutManager(this,2)
         binding.rv.adapter = customGalleryAdapter
         binding.rv.addItemDecoration(
             SpaceItemDecoration(4)
@@ -61,7 +61,7 @@ class LikedActivity: AppCompatActivity() {
 
         customGalleryAdapter.setOnClickListenerImage{ _, pos ->
             val intent = Intent(this , ScreenSlidePagerActivity::class.java)
-            intent.putExtra("customGallery",true)
+            intent.putExtra("Activity",3)
             intent.putExtra("position", pos)
             startActivity(intent)
         }

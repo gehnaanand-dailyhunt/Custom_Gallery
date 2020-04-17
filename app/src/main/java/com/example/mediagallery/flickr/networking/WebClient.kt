@@ -12,7 +12,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "https://wwww.flickr.com/"
+private const val BASE_URL = "https://www.flickr.com/"
 private const val CONNECTION_TIMEOUT_MS: Long = 10
 
 object WebClient {
