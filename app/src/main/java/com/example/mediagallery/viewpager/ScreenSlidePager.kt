@@ -36,12 +36,9 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_pager)
 
-        //val customGalleryAdapter = ScreenSlidePagerAdapter(this)
         var screenSlidePagerAdapter: ScreenSlidePagerAdapter
         viewPager = findViewById(R.id.pager)
         viewPager.setPageTransformer(ZoomOutPageTransformer())
-        //viewPager.adapter = customGalleryAdapter
-
 
         val activity_name = intent.getIntExtra("Activity", 1)
         when(activity_name){
@@ -75,15 +72,6 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                 })
             }
         }
-
-        /*screenSlidePagerAdapter.setOnClickListenerLike { image ->
-            imageViewModel.update(image)
-        }*/
-
-        /*customGalleryAdapter.setOnClickListener{ image, pos ->
-            Toast.makeText(this, image.title, Toast.LENGTH_SHORT)
-        }*/
-
     }
 
     fun setInitialPos() {
