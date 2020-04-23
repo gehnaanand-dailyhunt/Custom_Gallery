@@ -69,17 +69,18 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
             //Custom Gallery
             2 -> {
                 imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
-                    screenSlidePagerAdapter = ScreenSlidePagerAdapter(this,images)
-                    viewPager.adapter = screenSlidePagerAdapter
-                    screenSlidePagerAdapter.setOnClickListenerLike { image ->
-                        imageViewModel.update(image)
+                    if(!images.isEmpty()) {
+                        screenSlidePagerAdapter = ScreenSlidePagerAdapter(this, images)
+                        viewPager.adapter = screenSlidePagerAdapter
+                        screenSlidePagerAdapter.setOnClickListenerLike { image ->
+                            imageViewModel.update(image)
+                        }
+                        screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
+                            val intent = Intent(this, VideoPlayerActivity::class.java)
+                            intent.putExtra("uri", uri)
+                            startActivity(intent)
+                        }
                     }
-                    screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
-                        val intent = Intent(this, VideoPlayerActivity::class.java)
-                        intent.putExtra("uri",uri)
-                        startActivity(intent)
-                    }
-
                 })
             }
             //Liked Activity
@@ -90,6 +91,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                     screenSlidePagerAdapter.setOnClickListenerLike { image ->
                         imageViewModel.update(image)
                     }
+
                     screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
                         val intent = Intent(this, VideoPlayerActivity::class.java)
                         intent.putExtra("uri",uri)
@@ -116,30 +118,48 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.delete_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val delete = menu?.findItem(R.id.delete)
+        if(activity_name == 2)
+            if (delete != null) {
+                delete.setVisible(true)
+            }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
             R.id.delete -> {
+                val pos = intent.getIntExtra("position", 0)
                 val builder = AlertDialog.Builder(this).setTitle("Delete")
                     .setMessage("Are you sure you want to delete?")
-                    .setPositiveButton("OK"){ dialog, which ->
-                        when(activity_name){
-                            2 -> {
-                                imageViewModel.allPhotos.observe(this, Observer { image ->
-                                    imageViewModel.delete(image)
-                                })
-                            }
-                        }
+                    .setPositiveButton("OK") { dialog, which ->
+                        imageViewModel.allPhotos.observe(this, Observer { image ->
+                            val galleryPicture = image[pos]
+                            imageViewModel.delete(galleryPicture)
+                            dialog.dismiss()
+                        })
 
                     }
+                    .setNegativeButton("Cancel") { dialog, which ->
+                        dialog.cancel()
+                    }
+                builder.show()
+                imageViewModel.allPhotos.observe(this, Observer { images ->
+                    val screenSlidePagerAdapter = ScreenSlidePagerAdapter(this, images)
+                    viewPager.adapter = screenSlidePagerAdapter
+                })
+                viewPager.setCurrentItem(pos, false)
             }
         }
         return super.onOptionsItemSelected(item)
     }*/
+
     fun setInitialPos() {
         val pos: Int = intent.getIntExtra("position", 0)
         if(pos!= 0) {

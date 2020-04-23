@@ -95,7 +95,7 @@ class CustomGalleryActivity : AppCompatActivity() {
                     binding.rv.layoutManager = LinearLayoutManager(this)
                     item.title = "GRID"
                 }else{
-                    binding.rv.layoutManager = GridLayoutManager(this,3)
+                    binding.rv.layoutManager = GridLayoutManager(this,2)
                     item.title = "LIST"
                 }
             }

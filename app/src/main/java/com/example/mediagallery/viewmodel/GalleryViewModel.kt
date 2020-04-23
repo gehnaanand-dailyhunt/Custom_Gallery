@@ -121,6 +121,10 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
         imageRepo.likeToggle(galleryPicture)
     }
 
+    fun deleteAll(){
+        imageRepo.deleteAll()
+    }
+
 }
 private fun ContentResolver.registerObserver(
     uri: Uri,

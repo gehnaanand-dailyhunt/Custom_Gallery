@@ -73,6 +73,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         }
         binding.cameraMode.setOnClickListener {
             if(camMode){
+                Toast.makeText(this, "Video Mode", Toast.LENGTH_SHORT).show()
                 camMode = false
                 binding.cameraMode.background = getDrawable(R.drawable.ic_action_camera)
                 captureButton.setOnClickListener(null)
@@ -81,6 +82,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                 }
                 startCamera()
             } else{
+                Toast.makeText(this, "Photo Mode", Toast.LENGTH_SHORT).show()
                 camMode = true
                 binding.cameraMode.background = getDrawable(R.drawable.ic_action_video)
                 captureButton.setOnClickListener {

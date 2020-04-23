@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mediagallery.adapter.CustomGalleryAdapter
 import com.example.mediagallery.adapter.GalleryAdapter
 import com.example.mediagallery.utils.SpaceItemDecoration
 import com.example.mediagallery.camera.Camera
@@ -101,6 +102,11 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("uri",uri)
             startActivity(intent)
         }
+
+        /*galleryAdapter.setOnClickListenerLike { galleryPicture ->
+            galleryViewModel.insert(galleryPicture)
+            galleryViewModel.update(galleryPicture)
+        }*/
         requestReadStoragePermission()
     }
 
@@ -124,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId){
             R.id.change_layout -> {
                 if(item.title == "LIST"){
+                    //galleryViewModel.deleteAll()
                     binding.rv.layoutManager = LinearLayoutManager(this)
                     item.title = "GRID"
                 }else{

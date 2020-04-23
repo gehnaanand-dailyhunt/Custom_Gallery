@@ -27,4 +27,7 @@ interface ImageDao{
     //@Query("DELETE from image_table WHERE id = :id")
     @Delete
     fun delete(image: GalleryPicture)
+
+    @Query("DELETE from image_table")
+    fun deleteAll()
 }

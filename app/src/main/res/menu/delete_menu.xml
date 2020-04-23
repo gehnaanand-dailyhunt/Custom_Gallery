@@ -6,6 +6,7 @@
         android:icon="@drawable/ic_action_delete"
         android:title="@string/txt_delete"
         android:id="@+id/delete"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
 
 </menu>

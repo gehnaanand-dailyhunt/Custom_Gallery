@@ -19,5 +19,8 @@ class ImageRepo(private val imageDao: ImageDao){
         imageDao.delete(galleryPicture)
     }
 
+    fun deleteAll(){
+        imageDao.deleteAll()
+    }
     val likedPhotos : LiveData<List<GalleryPicture>> = imageDao.getLiked()
 }

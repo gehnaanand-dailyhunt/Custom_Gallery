@@ -15,6 +15,7 @@ import com.example.mediagallery.CustomGalleryActivity
 import com.example.mediagallery.LikedActivity
 import com.example.mediagallery.MainActivity
 import com.example.mediagallery.R
+import com.example.mediagallery.adapter.CustomGalleryAdapter
 import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.FlickrActivityPhotosBinding
 import com.example.mediagallery.flickr.adapter.PhotoAdapter
@@ -28,11 +29,11 @@ import kotlinx.android.synthetic.main.flickr_activity_photos.*
 
 class PhotosActivity : AppCompatActivity() {
     private lateinit var query_string : String
-
+    private val photosViewModel: PhotosViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flickr_activity_photos)
-        val photosViewModel: PhotosViewModel by viewModels()
+
         val binding : FlickrActivityPhotosBinding = DataBindingUtil.setContentView(this, R.layout.flickr_activity_photos)
 
         binding.navView.selectedItemId = R.id.nav_flickr_gallery
@@ -57,7 +58,7 @@ class PhotosActivity : AppCompatActivity() {
 
         val photoAdapter = PhotoAdapter()
         binding.photosRecyclerView.adapter = photoAdapter
-        binding.photosRecyclerView.layoutManager = GridLayoutManager(this, 3)
+        binding.photosRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.photosRecyclerView.addItemDecoration(
             SpaceItemDecoration(4)
         )
@@ -74,6 +75,12 @@ class PhotosActivity : AppCompatActivity() {
             intent.putExtra("Query", query_string)
             startActivity(intent)
         }
+
+        /*photoAdapter.setOnClickListenerLike { galleryPicture ->
+            photosViewModel.insert(galleryPicture)
+            photosViewModel.update(galleryPicture)
+        }*/
+
         binding.buttonSearch.setOnClickListener {
             val search_et = findViewById<EditText>(R.id.editText)
             val string = search_et.text.toString()
