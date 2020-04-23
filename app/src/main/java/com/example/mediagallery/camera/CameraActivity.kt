@@ -1,6 +1,7 @@
 package com.example.mediagallery.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Matrix
@@ -23,6 +24,7 @@ import com.example.mediagallery.databinding.CameraBinding
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.ImageViewModel
 import com.google.android.material.textfield.TextInputLayout
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -33,8 +35,10 @@ class Camera : AppCompatActivity(), LifecycleOwner {
     private lateinit var viewFinder: TextureView
     private   lateinit var captureButton: ImageButton
     private lateinit var viewModel: ImageViewModel
+    private lateinit var imageCapture: ImageCapture
+    private lateinit var videoCapture: VideoCapture
 
-
+    @SuppressLint("ClickableViewAccessibility", "RestrictedAPI")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.camera)
@@ -45,8 +49,12 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         viewFinder = binding.viewFinder
         captureButton = binding.captureButton
 
+        binding.imageView.setOnClickListener {
+            startActivity(Intent(this, CustomGalleryActivity::class.java))
+        }
+
         // Request camera permissions
-        if (allPermissionsGranted()) {
+        /*if (allPermissionsGranted()) {
             viewFinder.post { startCamera() }
             binding.imageView.setOnClickListener {
                 startActivity(Intent(this, CustomGalleryActivity::class.java))
@@ -58,9 +66,31 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                 REQUIRED_PERMISSIONS,
                 REQUEST_CODE_PERMISSIONS
             )
+        }*/
+
+        binding.captureButton.setOnClickListener {
+            photoCapture()
+        }
+        binding.cameraMode.setOnClickListener {
+            if(camMode){
+                camMode = false
+                binding.cameraMode.background = getDrawable(R.drawable.ic_action_camera)
+                captureButton.setOnClickListener(null)
+                captureButton.setOnTouchListener { _, event ->
+                    videoCapture(event)
+                }
+                startCamera()
+            } else{
+                camMode = true
+                binding.cameraMode.background = getDrawable(R.drawable.ic_action_video)
+                captureButton.setOnClickListener {
+                    photoCapture()
+                }
+                startCamera()
+            }
         }
 
-
+        methodWithPermissions()
         // Every time the provided texture view changes, recompute layout
         /*ViewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateTransform()
@@ -70,6 +100,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
 
     private val executor = Executors.newSingleThreadExecutor()
 
+    @SuppressLint("RestrictedApi","ClickableViewAccessibility")
     private fun startCamera() {
         val previewConfig = PreviewConfig.Builder().apply {
             //setTargetResolution(Size(1280, 720))
@@ -90,36 +121,78 @@ class Camera : AppCompatActivity(), LifecycleOwner {
             viewFinder.surfaceTexture = it.surfaceTexture
             updateTransform()
         }
+        CameraX.unbindAll()
+        if(camMode){
+            val imageCaptureConfig = ImageCaptureConfig.Builder()
+                .apply {
+                    setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
+                }
+                .build()
 
-        val imageCaptureConfig = ImageCaptureConfig.Builder()
-            .apply {
-                setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
-            }
-            .build()
+            imageCapture = ImageCapture(imageCaptureConfig)
+            CameraX.bindToLifecycle(this, preview, imageCapture)
+        }else {
+            val videoCaptureConfig = VideoCaptureConfig.Builder()
+                .apply {
+                    setTargetRotation(viewFinder.display.rotation)
+                }.build()
+            videoCapture = VideoCapture(videoCaptureConfig)
+            CameraX.bindToLifecycle(this, preview, videoCapture)
+        }
+    }
 
+    fun photoCapture(){
 
-        val imageCapture = ImageCapture(imageCaptureConfig)
-        binding.captureButton.setOnClickListener {
+        val file = File(externalMediaDirs.first(),
+            "${System.currentTimeMillis()}.jpg")
 
-            val file = File(externalMediaDirs.first(),
-                "${System.currentTimeMillis()}.jpg")
+        imageCapture.takePicture(file, executor,
+            object : ImageCapture.OnImageSavedListener {
+                override fun onError(
+                    imageCaptureError: ImageCapture.ImageCaptureError,
+                    message: String,
+                    exc: Throwable?
+                ) {
+                    val msg = "Photo capture failed: $message"
+                    Log.e("CameraXApp", msg, exc)
+                    viewFinder.post {
+                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-            imageCapture.takePicture(file, executor,
-                object : ImageCapture.OnImageSavedListener {
+                override fun onImageSaved(file: File) {
+                    val msg = "Photo capture succeeded: ${file.absolutePath}"
+                    Log.d("CameraXApp", msg)
+                    viewFinder.post {
+                        insert_to_database(file)
+                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun videoCapture(event: MotionEvent): Boolean{
+        val file = File(externalMediaDirs.first(),
+            "${System.currentTimeMillis()}.mp4")
+
+        if(event.action == MotionEvent.ACTION_DOWN) {
+            videoCapture.startRecording(file, executor,
+                object : VideoCapture.OnVideoSavedListener {
                     override fun onError(
-                        imageCaptureError: ImageCapture.ImageCaptureError,
+                        videoCaptureError: VideoCapture.VideoCaptureError,
                         message: String,
                         exc: Throwable?
                     ) {
-                        val msg = "Photo capture failed: $message"
+                        val msg = "Video capture failed: $message"
                         Log.e("CameraXApp", msg, exc)
                         viewFinder.post {
                             Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                         }
                     }
 
-                    override fun onImageSaved(file: File) {
-                        val msg = "Photo capture succeeded: ${file.absolutePath}"
+                    override fun onVideoSaved(file: File) {
+                        val msg = "Video capture succeeded: ${file.absolutePath}"
                         Log.d("CameraXApp", msg)
                         viewFinder.post {
                             insert_to_database(file)
@@ -127,10 +200,13 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                         }
                     }
                 })
+        } else if(event.action == MotionEvent.ACTION_UP) {
+            videoCapture.stopRecording()
+            Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show()
         }
-        CameraX.bindToLifecycle(this, preview, imageCapture)
-    }
+        return false
 
+    }
     fun insert_to_database(image_file : File){
         val custLayout = LayoutInflater.from(this).inflate(R.layout.text_input_dialog,null)
         val image_title: TextInputLayout = custLayout.findViewById(R.id.title)
@@ -144,7 +220,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                 val galleryPicture = GalleryPicture(0, title, tag, date, uri)
                 viewModel.insert(galleryPicture)
                 dialog.dismiss()
-                Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, title+" "+ date, Toast.LENGTH_SHORT).show()
 
             }
             .setNegativeButton("Cancel"){ dialog, _ ->
@@ -193,6 +269,18 @@ class Camera : AppCompatActivity(), LifecycleOwner {
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun methodWithPermissions() =
+        runWithPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+            viewFinder.post { startCamera() }
+        }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        methodWithPermissions()
+    }
+        companion object{
+        private var camMode = true
     }
 
 }

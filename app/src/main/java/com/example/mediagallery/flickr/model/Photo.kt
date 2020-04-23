@@ -12,7 +12,8 @@ data class Photo constructor(
     @field:SerializedName("url")
     val url: String,
     @field:SerializedName("title")
-    val title: String) {
+    val title: String,
+    val dateTaken: Long){
 
     companion object {
         val DiffCallback = object : DiffUtil.ItemCallback<Photo>() {

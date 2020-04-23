@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/black"
     android:paddingBottom="20dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -25,7 +26,22 @@
             android:layout_margin="0dp"
             app:layout_constraintHorizontal_weight="1"
             android:contentDescription="@string/image"/>
+
+        <ImageButton
+            android:layout_width="@dimen/play_button"
+            android:layout_height="@dimen/play_button"
+            android:alpha="0.5"
+            app:layout_constraintTop_toTopOf="@id/image"
+            app:layout_constraintLeft_toLeftOf="@id/image"
+            app:layout_constraintRight_toRightOf="@id/image"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            android:id="@+id/play_button"
+            android:visibility="gone"
+            android:contentDescription="@string/play_video"
+            android:background="@drawable/ic_action_play_video"
+            />
         <LinearLayout
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

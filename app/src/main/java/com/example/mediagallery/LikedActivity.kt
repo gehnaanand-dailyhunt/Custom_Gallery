@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediagallery.adapter.CustomGalleryAdapter
 import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
+import com.example.mediagallery.flickr.PhotosActivity
 import com.example.mediagallery.utils.SpaceItemDecoration
 import com.example.mediagallery.viewmodel.ImageViewModel
 import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
@@ -34,8 +35,8 @@ class LikedActivity: AppCompatActivity() {
                 R.id.nav_gallery -> {
                     startActivity(Intent(this, MainActivity::class.java))
                 }
-                R.id.nav_camera -> {
-                    startActivity(Intent(this, Camera::class.java))
+                R.id.nav_flickr_gallery -> {
+                    startActivity(Intent(this, PhotosActivity::class.java))
                 }
                 R.id.nav_custom_gallery -> {
                     startActivity(Intent(this, CustomGalleryActivity::class.java))
@@ -70,6 +71,9 @@ class LikedActivity: AppCompatActivity() {
             viewModel.update(galleryPicture)
         }
 
+        binding.fabLayout.fabCamera.setOnClickListener {
+            startActivity(Intent(this, Camera::class.java))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -88,7 +92,6 @@ class LikedActivity: AppCompatActivity() {
                     item.title = "LIST"
                 }
             }
-
         }
         return super.onOptionsItemSelected(item)
     }

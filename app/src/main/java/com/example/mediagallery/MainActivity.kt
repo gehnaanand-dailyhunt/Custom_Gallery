@@ -22,6 +22,7 @@ import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.flickr.PhotosActivity
 import com.example.mediagallery.model.GalleryPicture
+import com.example.mediagallery.viewmodel.GalleryVideoViewModel
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
 import kotlinx.android.synthetic.main.multi_gallery_listitem.*
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     //private lateinit var adapter: GalleryAdapter
     private val galleryViewModel: GalleryViewModel by viewModels()
+    private val galleryVideoViewModel: GalleryVideoViewModel by viewModels()
 
     //private lateinit var pictures: ArrayList<GalleryPicture>
     private lateinit var binding: ActivityMainBinding
@@ -37,16 +39,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        /*val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        navView.setNavigationItemSelectedListener(this)*/
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
@@ -56,8 +48,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_gallery -> {
                     startActivity(Intent(this, MainActivity::class.java))
                 }
-                R.id.nav_camera -> {
-                    startActivity(Intent(this, Camera::class.java))
+                R.id.nav_flickr_gallery -> {
+                    startActivity(Intent(this, PhotosActivity::class.java))
                 }
                 R.id.nav_custom_gallery -> {
                     startActivity(Intent(this, CustomGalleryActivity::class.java))
@@ -82,6 +74,13 @@ class MainActivity : AppCompatActivity() {
             )
         )
         //binding.rv.adapter = adapter
+        binding.fabLayout.fabCamera.setOnClickListener {
+            startActivity(Intent(this, Camera::class.java))
+        }
+
+        galleryVideoViewModel.videos.observe(this, Observer {videos ->
+            galleryAdapter.submitList(videos)
+        })
 
         galleryViewModel.images.observe(this, Observer <List<GalleryPicture>> { images ->
             galleryAdapter.submitList(images)
@@ -96,9 +95,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         requestReadStoragePermission()
-
-
-
     }
 
     private fun requestReadStoragePermission() {
@@ -128,15 +124,13 @@ class MainActivity : AppCompatActivity() {
                     item.title = "LIST"
                 }
             }
-            R.id.search -> {
-                startActivity(Intent(applicationContext,PhotosActivity::class.java))
-            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun loadPictures() {
         galleryViewModel.loadImages()
+        galleryVideoViewModel.loadVideos()
     }
 
     private fun showToast(s: String) = Toast.makeText(this, s, Toast.LENGTH_SHORT).show()

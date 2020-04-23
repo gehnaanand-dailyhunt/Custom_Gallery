@@ -2,6 +2,7 @@ package com.example.mediagallery.viewpager
 
 import ZoomOutPageTransformer
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,8 +20,10 @@ import com.example.mediagallery.R
 import com.example.mediagallery.flickr.model.Photo
 import com.example.mediagallery.flickr.viewmodel.PhotosViewModel
 import com.example.mediagallery.model.GalleryPicture
+import com.example.mediagallery.videoPlayer.VideoPlayerActivity
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewmodel.ImageViewModel
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.post_list_item.*
 
 
@@ -30,6 +33,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
 
     private val viewModel: GalleryViewModel by viewModels()
     private val imageViewModel: ImageViewModel by viewModels()
+    private val photosViewModel: PhotosViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,10 +48,18 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         when(activity_name){
             //Main Activity
             1 -> {
-                viewModel.loadImages()
+                //viewModel.loadImages()
                 viewModel.images.observe(this, Observer<List<GalleryPicture>> { images ->
-                    viewPager.adapter = ScreenSlidePagerAdapter(this, images)
+                    screenSlidePagerAdapter = ScreenSlidePagerAdapter(this, images)
+                    viewPager.adapter = screenSlidePagerAdapter
+                    screenSlidePagerAdapter.setOnClickListenerLike { image ->
+                        Log.i("2222222","2222222")
+                        viewModel.insert(image)
+                        viewModel.update(image)
+                        Log.i("3333333","33333333")
+                    }
                 })
+
             }
             //Custom Gallery
             2 -> {
@@ -56,6 +68,11 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                     viewPager.adapter = screenSlidePagerAdapter
                     screenSlidePagerAdapter.setOnClickListenerLike { image ->
                         imageViewModel.update(image)
+                    }
+                    screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
+                        val intent = Intent(this, VideoPlayerActivity::class.java)
+                        intent.putExtra("uri",uri)
+                        startActivity(intent)
                     }
 
                 })
@@ -67,6 +84,21 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                     viewPager.adapter = screenSlidePagerAdapter
                     screenSlidePagerAdapter.setOnClickListenerLike { image ->
                         imageViewModel.update(image)
+                    }
+
+                })
+            }
+            //Flickr Activity
+            4 -> {
+                val string = intent.getStringExtra("Query")
+                photosViewModel.loadPhotos(string)
+                photosViewModel.images.observe(this, Observer { images ->
+                    screenSlidePagerAdapter = ScreenSlidePagerAdapter(this, images)
+                    viewPager.adapter = screenSlidePagerAdapter
+
+                    screenSlidePagerAdapter.setOnClickListenerLike { image ->
+                        photosViewModel.insert(image)
+                        photosViewModel.update(image)
                     }
 
                 })

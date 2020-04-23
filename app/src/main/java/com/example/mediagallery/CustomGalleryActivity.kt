@@ -2,6 +2,7 @@ package com.example.mediagallery
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediagallery.adapter.CustomGalleryAdapter
 import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
+import com.example.mediagallery.flickr.PhotosActivity
 import com.example.mediagallery.utils.SpaceItemDecoration
-import com.example.mediagallery.utils.TopSpacingItemDecoration
+import com.example.mediagallery.videoPlayer.VideoPlayerActivity
 import com.example.mediagallery.viewmodel.ImageViewModel
 import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
 
@@ -35,8 +37,8 @@ class CustomGalleryActivity : AppCompatActivity() {
                 R.id.nav_gallery -> {
                     startActivity(Intent(this, MainActivity::class.java))
                 }
-                R.id.nav_camera -> {
-                    startActivity(Intent(this, Camera::class.java))
+                R.id.nav_flickr_gallery -> {
+                    startActivity(Intent(this, PhotosActivity::class.java))
                 }
                 R.id.nav_custom_gallery -> {
                     startActivity(Intent(this, CustomGalleryActivity::class.java))
@@ -68,6 +70,17 @@ class CustomGalleryActivity : AppCompatActivity() {
 
         customGalleryAdapter.setOnClickListenerLike {
             galleryPicture -> viewModel.update(galleryPicture)
+        }
+
+        customGalleryAdapter.setOnClickListenerVideo { uri ->
+            val intent = Intent(this, VideoPlayerActivity::class.java)
+            intent.putExtra("uri", uri)
+            startActivity(intent)
+            Log.i("--------------","Success 3")
+        }
+
+        binding.fabLayout.fabCamera.setOnClickListener {
+            startActivity(Intent(this, Camera::class.java))
         }
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

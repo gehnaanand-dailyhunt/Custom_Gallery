@@ -1,8 +1,10 @@
 package com.example.mediagallery.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
@@ -16,6 +18,7 @@ import kotlinx.android.synthetic.main.post_list_item.view.*
 class CustomGalleryAdapter : ListAdapter<GalleryPicture, ImageViewHolder2>(GalleryPicture.DiffCallback){
     private lateinit var onClickImage : (GalleryPicture, Int) -> Unit
     private lateinit var onClickLike : (GalleryPicture) -> Unit
+    private lateinit var onClickPlay : (String) -> Unit
 
     fun setOnClickListenerImage(onClick: (GalleryPicture, Int) -> Unit){
         this.onClickImage = onClick
@@ -23,6 +26,10 @@ class CustomGalleryAdapter : ListAdapter<GalleryPicture, ImageViewHolder2>(Galle
 
     fun setOnClickListenerLike(onClick: (GalleryPicture) -> Unit){
         this.onClickLike = onClick
+    }
+
+    fun setOnClickListenerVideo(onClick: (String) -> Unit){
+        this.onClickPlay = onClick
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder2 {
@@ -34,6 +41,13 @@ class CustomGalleryAdapter : ListAdapter<GalleryPicture, ImageViewHolder2>(Galle
             val position = holder.adapterPosition
             val image = getItem(position)
             onClickImage(image, position)
+        }
+
+        holder.play_button.setOnClickListener {
+            val position = holder.adapterPosition
+            val video = getItem(position)
+            onClickPlay(video.contentUri)
+            Log.i("----------------","Success")
         }
         return holder
     }
@@ -57,6 +71,11 @@ class CustomGalleryAdapter : ListAdapter<GalleryPicture, ImageViewHolder2>(Galle
             notifyDataSetChanged()
         }
 
+        val uri = galleryPicture.contentUri
+        val index = uri.lastIndexOf(".")
+        if(index > 0 && uri.substring(index) == ".mp4")
+            holder.play_button.visibility = View.VISIBLE
+
         Glide.with(holder.imageView)
             .load(galleryPicture.contentUri)
             .thumbnail(0.33f)
@@ -73,5 +92,5 @@ class ImageViewHolder2(override val containerView: View) : RecyclerView.ViewHold
     val title: TextView = containerView.findViewById(R.id.title)
     val tags: TextView = containerView.findViewById(R.id.tags)
     val like: ImageView = containerView.findViewById(R.id.like)
-
+    val play_button: ImageButton = containerView.findViewById(R.id.play_button)
 }

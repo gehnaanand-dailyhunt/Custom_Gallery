@@ -11,7 +11,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.mediagallery.database.ImageDatabase
 import com.example.mediagallery.model.GalleryPicture
+import com.example.mediagallery.repository.ImageRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,8 +22,18 @@ import java.util.*
 
 class GalleryViewModel(application: Application) : AndroidViewModel(application) {
 
+
+
     private val _images = MutableLiveData<List<GalleryPicture>>()
     val images: LiveData<List<GalleryPicture>> get() = _images
+
+    private  val imageRepo: ImageRepo
+
+    init {
+        loadImages()
+        val imageDao = ImageDatabase.getDatabase(application).imageDao()
+        imageRepo = ImageRepo(imageDao)
+    }
 
     private var contentObserver: ContentObserver? = null
 
@@ -96,6 +108,19 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
             getApplication<Application>().contentResolver.unregisterContentObserver(it)
         }
     }
+
+
+    fun insert(galleryPicture: GalleryPicture) = viewModelScope.launch(Dispatchers.IO) {
+        imageRepo.insert(galleryPicture)
+    }
+
+    fun delete(id: Long) = viewModelScope.launch(Dispatchers.IO) {
+        imageRepo.delete(id)
+    }
+    fun update(galleryPicture: GalleryPicture) = viewModelScope.launch(Dispatchers.IO) {
+        imageRepo.likeToggle(galleryPicture)
+    }
+
 }
 private fun ContentResolver.registerObserver(
     uri: Uri,

@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.multi_gallery_listitem.view.*
 class GalleryAdapter() : ListAdapter<GalleryPicture, ImageViewHolder>(GalleryPicture.DiffCallback) {
 
     private lateinit var onClick: (GalleryPicture, Int) -> Unit
+
     fun setOnClickListener(onClick: (GalleryPicture, Int) -> Unit) {
         this.onClick = onClick
     }
@@ -37,6 +38,7 @@ class GalleryAdapter() : ListAdapter<GalleryPicture, ImageViewHolder>(GalleryPic
         val galleryPicture = getItem(position)
         holder.rootView.tag = galleryPicture
         holder.pos = position
+
 
         Glide.with(holder.imageView)
             .load(galleryPicture.contentUri)

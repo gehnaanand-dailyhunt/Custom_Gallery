@@ -3,6 +3,9 @@
     <dimen name="padding_medium">12dp</dimen>
     <dimen name="padding_moderate">8dp</dimen>
     <dimen name="cameraui">50dp</dimen>
+    <dimen name="camera_ui_margin">30dp</dimen>
+
+    <dimen name="play_button">70dp</dimen>
 
     <!-- Navigation-->
     <dimen name="activity_horizontal_margin">16dp</dimen>
