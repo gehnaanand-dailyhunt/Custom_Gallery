@@ -5,12 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +34,6 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
     private val imageViewModel: ImageViewModel by viewModels()
     private val photosViewModel: PhotosViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_pager)
@@ -44,8 +42,9 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.pager)
         viewPager.setPageTransformer(ZoomOutPageTransformer())
 
-        val activity_name = intent.getIntExtra("Activity", 1)
+        activity_name = intent.getIntExtra("Activity", 1)
         when(activity_name){
+
             //Main Activity
             1 -> {
                 //viewModel.loadImages()
@@ -57,6 +56,12 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                         viewModel.insert(image)
                         viewModel.update(image)
                         Log.i("3333333","33333333")
+                    }
+
+                    screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
+                        val intent = Intent(this, VideoPlayerActivity::class.java)
+                        intent.putExtra("uri",uri)
+                        startActivity(intent)
                     }
                 })
 
@@ -85,6 +90,11 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                     screenSlidePagerAdapter.setOnClickListenerLike { image ->
                         imageViewModel.update(image)
                     }
+                    screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
+                        val intent = Intent(this, VideoPlayerActivity::class.java)
+                        intent.putExtra("uri",uri)
+                        startActivity(intent)
+                    }
 
                 })
             }
@@ -106,10 +116,38 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.delete_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.delete -> {
+                val builder = AlertDialog.Builder(this).setTitle("Delete")
+                    .setMessage("Are you sure you want to delete?")
+                    .setPositiveButton("OK"){ dialog, which ->
+                        when(activity_name){
+                            2 -> {
+                                imageViewModel.allPhotos.observe(this, Observer { image ->
+                                    imageViewModel.delete(image)
+                                })
+                            }
+                        }
+
+                    }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }*/
     fun setInitialPos() {
         val pos: Int = intent.getIntExtra("position", 0)
         if(pos!= 0) {
             viewPager.setCurrentItem(pos,false)
         }
+    }
+
+    companion object{
+        private var activity_name : Int = 0
     }
 }

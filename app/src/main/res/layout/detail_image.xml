@@ -19,7 +19,6 @@
         android:layout_centerInParent="true"
         android:background="@drawable/ic_action_play_video"
         android:id="@+id/play_button"
-        android:alpha="0.5"
         android:visibility="gone"/>
     <LinearLayout
         android:layout_width="match_parent"

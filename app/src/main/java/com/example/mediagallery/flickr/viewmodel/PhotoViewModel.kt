@@ -58,8 +58,8 @@ class PhotosViewModel(application: Application) : AndroidViewModel(application) 
         imageRepo.insert(galleryPicture)
     }
 
-    fun delete(id: Long) = viewModelScope.launch(Dispatchers.IO) {
-        imageRepo.delete(id)
+    fun delete(galleryPicture: GalleryPicture) = viewModelScope.launch(Dispatchers.IO) {
+        imageRepo.delete(galleryPicture)
     }
     fun update(galleryPicture: GalleryPicture) = viewModelScope.launch(Dispatchers.IO) {
         imageRepo.likeToggle(galleryPicture)

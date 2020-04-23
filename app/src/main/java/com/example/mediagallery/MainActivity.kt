@@ -22,6 +22,7 @@ import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityMainBinding
 import com.example.mediagallery.flickr.PhotosActivity
 import com.example.mediagallery.model.GalleryPicture
+import com.example.mediagallery.videoPlayer.VideoPlayerActivity
 import com.example.mediagallery.viewmodel.GalleryVideoViewModel
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewpager.ScreenSlidePagerActivity
@@ -92,6 +93,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ScreenSlidePagerActivity::class.java)
             intent.putExtra("position", pos)
             intent.putExtra("Activity", 1)
+            startActivity(intent)
+        }
+
+        galleryAdapter.setOnClickListenerVideo { uri ->
+            val intent = Intent(this, VideoPlayerActivity::class.java)
+            intent.putExtra("uri",uri)
             startActivity(intent)
         }
         requestReadStoragePermission()

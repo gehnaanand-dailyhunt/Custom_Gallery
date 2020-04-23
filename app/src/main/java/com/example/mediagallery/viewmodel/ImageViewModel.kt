@@ -29,4 +29,8 @@ class ImageViewModel(application: Application) : AndroidViewModel(application){
     fun update(galleryPicture: GalleryPicture) = viewModelScope.launch(Dispatchers.IO) {
         imageRepo.likeToggle(galleryPicture)
     }
+
+    fun delete(galleryPicture: GalleryPicture) = viewModelScope.launch(Dispatchers.IO) {
+        imageRepo.delete(galleryPicture)
+    }
 }

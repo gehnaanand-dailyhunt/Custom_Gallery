@@ -1,8 +1,6 @@
 package com.example.mediagallery.flickr.model
 
 import androidx.recyclerview.widget.DiffUtil
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 

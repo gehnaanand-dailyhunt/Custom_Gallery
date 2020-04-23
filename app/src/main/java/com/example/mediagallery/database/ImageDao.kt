@@ -1,10 +1,7 @@
 package com.example.mediagallery.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.mediagallery.model.GalleryPicture
 
 @Dao
@@ -27,6 +24,7 @@ interface ImageDao{
     @Query("update image_table set isLiked = :like where id = :id")
     fun likeUpdate(id: Long, like: Boolean)
 
-    @Query("DELETE from image_table WHERE id = :id")
-    fun delete(id: Long)
+    //@Query("DELETE from image_table WHERE id = :id")
+    @Delete
+    fun delete(image: GalleryPicture)
 }

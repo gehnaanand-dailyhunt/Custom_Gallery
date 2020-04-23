@@ -17,4 +17,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <ImageButton
+        android:layout_width="@dimen/play_button"
+        android:layout_height="@dimen/play_button"
+        app:layout_constraintTop_toTopOf="@id/image"
+        app:layout_constraintLeft_toLeftOf="@id/image"
+        app:layout_constraintRight_toRightOf="@id/image"
+        app:layout_constraintBottom_toBottomOf="@id/image"
+        android:id="@+id/play_button"
+        android:visibility="gone"
+        android:contentDescription="@string/play_video"
+        android:background="@drawable/ic_action_play_video" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
