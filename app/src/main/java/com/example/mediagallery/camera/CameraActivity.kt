@@ -33,6 +33,7 @@ private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 class Camera : AppCompatActivity(), LifecycleOwner {
     private lateinit var binding: CameraBinding
     private lateinit var viewFinder: TextureView
+    private var lensMode = CameraX.LensFacing.BACK
     private   lateinit var captureButton: ImageButton
     private lateinit var viewModel: ImageViewModel
     private lateinit var imageCapture: ImageCapture
@@ -53,6 +54,14 @@ class Camera : AppCompatActivity(), LifecycleOwner {
             startActivity(Intent(this, CustomGalleryActivity::class.java))
         }
 
+        /*binding.switchCamera.setOnClickListener {
+            if (lensMode == CameraX.LensFacing.BACK) {
+                lensMode = CameraX.LensFacing.FRONT
+            } else {
+                lensMode = CameraX.LensFacing.BACK
+            }
+            bindCameraUseCases()
+        }*/
         // Request camera permissions
         /*if (allPermissionsGranted()) {
             viewFinder.post { startCamera() }
@@ -273,6 +282,11 @@ class Camera : AppCompatActivity(), LifecycleOwner {
             baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
+    private fun bindCameraUseCases() {
+        CameraX.unbindAll()
+        viewFinder.post { startCamera() }
+    }
+
     fun methodWithPermissions() =
         runWithPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
             viewFinder.post { startCamera() }
@@ -280,6 +294,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         methodWithPermissions()
+        startCamera()
     }
         companion object{
         private var camMode = true
