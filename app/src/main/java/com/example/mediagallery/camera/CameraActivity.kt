@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.ImageButton
@@ -27,6 +28,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import java.io.File
 import java.util.concurrent.Executors
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 private const val REQUEST_CODE_PERMISSIONS = 10
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
@@ -54,14 +58,14 @@ class Camera : AppCompatActivity(), LifecycleOwner {
             startActivity(Intent(this, CustomGalleryActivity::class.java))
         }
 
-        /*binding.switchCamera.setOnClickListener {
-            if (lensMode == CameraX.LensFacing.BACK) {
-                lensMode = CameraX.LensFacing.FRONT
+        binding.switchCamera.setOnClickListener {
+            lensMode = if (lensMode == CameraX.LensFacing.FRONT) {
+                CameraX.LensFacing.BACK
             } else {
-                lensMode = CameraX.LensFacing.BACK
+                CameraX.LensFacing.FRONT
             }
             bindCameraUseCases()
-        }*/
+        }
         // Request camera permissions
         /*if (allPermissionsGranted()) {
             viewFinder.post { startCamera() }
@@ -113,8 +117,15 @@ class Camera : AppCompatActivity(), LifecycleOwner {
 
     @SuppressLint("RestrictedApi","ClickableViewAccessibility")
     private fun startCamera() {
+        val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
+        val screenAspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
+        val rotation = viewFinder.display.rotation
+
         val previewConfig = PreviewConfig.Builder().apply {
             //setTargetResolution(Size(1280, 720))
+            setTargetAspectRatio(screenAspectRatio)
+            setLensFacing(lensMode)
+            setTargetRotation(rotation)
         }.build()
 
 
@@ -136,7 +147,10 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         if(camMode){
             val imageCaptureConfig = ImageCaptureConfig.Builder()
                 .apply {
+                    setLensFacing(lensMode)
+                    setTargetRotation(windowManager.defaultDisplay.rotation)
                     setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
+                    setTargetAspectRatio(screenAspectRatio)
                 }
                 .build()
 
@@ -146,6 +160,8 @@ class Camera : AppCompatActivity(), LifecycleOwner {
             val videoCaptureConfig = VideoCaptureConfig.Builder()
                 .apply {
                     setTargetRotation(viewFinder.display.rotation)
+                    setLensFacing(lensMode)
+                    setTargetAspectRatio(screenAspectRatio)
                 }.build()
             videoCapture = VideoCapture(videoCaptureConfig)
             CameraX.bindToLifecycle(this, preview, videoCapture)
@@ -174,9 +190,15 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                 override fun onImageSaved(file: File) {
                     val msg = "Photo capture succeeded: ${file.absolutePath}"
                     Log.d("CameraXApp", msg)
+
+                    //startActivity(Intent(this, PreviewActivity::class.java))
                     viewFinder.post {
-                        insert_to_database(file)
-                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                        val intent = intent()
+                        intent.putExtra("uri", file.absolutePath)
+                        startActivity(intent)
+
+                        //insert_to_database(file)
+                        //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -206,7 +228,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                         val msg = "Video capture succeeded: ${file.absolutePath}"
                         Log.d("CameraXApp", msg)
                         viewFinder.post {
-                            insert_to_database(file)
+                            //insert_to_database(file)
                             Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -217,6 +239,10 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         }
         return false
 
+    }
+    fun intent(): Intent{
+        val intent = Intent(this, PreviewActivity::class.java)
+        return intent
     }
     fun insert_to_database(image_file : File){
         val custLayout = LayoutInflater.from(this).inflate(R.layout.text_input_dialog,null)
@@ -262,6 +288,14 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         viewFinder.setTransform(matrix)
     }
 
+    private fun aspectRatio(width: Int, height: Int): AspectRatio {
+        val previewRatio = max(width, height).toDouble() / min(width, height)
+        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
+            return AspectRatio.RATIO_4_3
+        }
+        return AspectRatio.RATIO_16_9
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -288,7 +322,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
     }
 
     fun methodWithPermissions() =
-        runWithPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+        runWithPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE) {
             viewFinder.post { startCamera() }
         }
     override fun onNewIntent(intent: Intent?) {
@@ -296,8 +330,11 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         methodWithPermissions()
         startCamera()
     }
-        companion object{
+
+    companion object{
         private var camMode = true
+        private const val RATIO_4_3_VALUE = 4.0 / 3.0
+        private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
 }

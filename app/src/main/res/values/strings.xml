@@ -22,4 +22,5 @@
     <string name="video_capture">Video Capture</string>
     <string name="play_video">Play Video</string>
     <string name="txt_delete">Delete</string>
+    <string name="txt_brush">Brush</string>
 </resources>

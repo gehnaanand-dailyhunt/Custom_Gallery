@@ -37,7 +37,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!--<ImageButton
+        <ImageButton
             android:id="@+id/switch_camera"
             android:layout_margin="@dimen/switchcam_margin"
             android:alpha="0.7"
@@ -47,7 +47,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="Front view"
-            tools:ignore="MissingConstraints" />-->
+            tools:ignore="MissingConstraints" />
 
         <ImageButton
             android:id="@+id/camera_mode"
