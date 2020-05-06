@@ -9,9 +9,9 @@
 
 
     <ja.burhanrashid52.photoeditor.PhotoEditorView
-    android:id="@+id/photoEditorView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+        android:id="@+id/photoEditorView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/add_text"
@@ -20,6 +20,49 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_action_add_text"
         android:layout_marginEnd="20dp"/>
+
+    <ImageView
+        android:id="@+id/add_emoji"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/add_text"
+        android:src="@drawable/ic_action_add_emoji"
+        android:layout_alignLeft="@+id/add_text"
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:id="@+id/add_filter"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/add_emoji"
+        android:layout_alignLeft="@+id/add_text"
+        android:src="@drawable/ic_action_add_filter"
+        android:layout_marginTop="20dp"
+        tools:listitem = "@layout/photo_editor_row_filter"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFilter"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:background="@color/tool_bg"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/photo_editor_row_filter"
+        android:layout_alignParentBottom="true"/>
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="20dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_action_close"/>
+
+
+
 
 </RelativeLayout>
 </layout>

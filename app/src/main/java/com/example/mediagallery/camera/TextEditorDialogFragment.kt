@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +15,17 @@ import androidx.annotation.ColorInt
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mediagallery.R
 import com.example.mediagallery.adapter.ColorPickerAdapter
 //import com.example.mediagallery.databinding.AddTextDialogBinding
-import kotlin.properties.Delegates
 
 class TextEditorDialogFragment : DialogFragment() {
     //private lateinit var binding: AddTextDialogBinding
     private lateinit var inputMethodManager : InputMethodManager
-    private var mColorCode: Int? = 0
+    private var mColorCode: Int = 1
     private lateinit var mTextEditor: TextEditor
     private lateinit var addTextEditText: EditText
     private lateinit var addTextDoneTextView : TextView
@@ -36,9 +35,9 @@ class TextEditorDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //binding = DataBindingUtil.inflate(inflater, R.layout.add_text_dialog, container, false)
+        //binding = DataBindingUtil.inflate(inflater, R.layout.photo_editor_add_text_dialog, container, false)
         //return binding.root
-        return inflater.inflate(R.layout.add_text_dialog, container, false)
+        return inflater.inflate(R.layout.photo_editor_add_text_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,11 +46,11 @@ class TextEditorDialogFragment : DialogFragment() {
         addTextEditText = view.findViewById(R.id.add_text_edit_text)
         addTextDoneTextView = view.findViewById(R.id.add_text_done_tv)
 
-        var linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        var addTextColorPickerRecyclerView = view.findViewById<RecyclerView>(R.id.add_text_color_picker_recycler_view)
+        val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        val addTextColorPickerRecyclerView = view.findViewById<RecyclerView>(R.id.add_text_color_picker_recycler_view)
         addTextColorPickerRecyclerView.layoutManager = linearLayoutManager
         addTextColorPickerRecyclerView.setHasFixedSize(true)
-        var colorPickerAdapter = ColorPickerAdapter(activity!!)
+        val colorPickerAdapter = ColorPickerAdapter(activity!!)
 
         colorPickerAdapter.setOnColorPickerClickListener { colorCode ->
             mColorCode = colorCode
@@ -59,18 +58,26 @@ class TextEditorDialogFragment : DialogFragment() {
         }
         addTextColorPickerRecyclerView.adapter = colorPickerAdapter
         addTextEditText.setText(arguments?.getString(EXTRA_INPUT_TEXT))
-        mColorCode = arguments?.getInt(EXTRA_COLOR_CODE)
+        mColorCode = arguments?.getInt(EXTRA_COLOR_CODE)!!
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
-        addTextDoneTextView.setOnClickListener {
-            inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+        addTextDoneTextView.setOnClickListener { v ->
+            Log.i("Check", "222222222")
+            if (v != null) {
+                Log.i("Check", "44444444444")
+                inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
+            }
             dismiss()
-            var inputText = addTextEditText.text.toString()
-            if(!TextUtils.isEmpty(inputText) && mTextEditor!= null){
-                mColorCode?.let { it1 -> mTextEditor.onDone(inputText, it1) }
+            val inputText = addTextEditText.text.toString()
+            Log.i("Check", inputText)
+            if(!TextUtils.isEmpty(inputText)){
+                Log.i("Check", mColorCode.toString())
+
+                Log.i("Check", mColorCode.toString())
+                mTextEditor.onDone(inputText, mColorCode)
+                Log.i("Check", "3333333333")
             }
         }
-
     }
 
     fun setOnTextEditorListener(textEditor: TextEditor){

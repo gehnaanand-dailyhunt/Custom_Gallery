@@ -1,10 +1,13 @@
 package com.example.mediagallery.camera
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
-import android.graphics.fonts.FontFamily
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,27 +16,35 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mediagallery.R
+import com.example.mediagallery.adapter.FilterAdapter
 import com.example.mediagallery.databinding.ActivityPreviewBinding
 import com.example.mediagallery.model.GalleryPicture
 import com.example.mediagallery.viewmodel.ImageViewModel
 import com.google.android.material.textfield.TextInputLayout
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
+import ja.burhanrashid52.photoeditor.PhotoFilter
 import ja.burhanrashid52.photoeditor.ViewType
 import java.io.File
 
-class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener {
+class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener, EmojiBSFragment.EmojiListener, FilterAdapter.FilterListener {
     private lateinit var viewModel: ImageViewModel
     private lateinit var binding: ActivityPreviewBinding
     private lateinit var mPhotoEditor: PhotoEditor
+    private lateinit var mEmojiBSFragment: EmojiBSFragment
+    lateinit var mEmojiTypeFace : Typeface
+    private lateinit var mFilterAdapter: FilterAdapter
 
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        makeFullScreen()
         setContentView(R.layout.activity_preview)
 
         viewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_preview)
+        mEmojiBSFragment = EmojiBSFragment()
 
         val uri = intent.getStringExtra("uri")
         Glide.with(binding.photoEditorView)
@@ -41,7 +52,7 @@ class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener {
             .into(binding.photoEditorView.source)
 
         val mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium)
-        val mEmojiTypeFace = Typeface.createFromAsset(assets, "emojione-android.ttf")
+        mEmojiTypeFace = Typeface.createFromAsset(assets, "NotoColorEmoji.ttf")
 
         mPhotoEditor = PhotoEditor.Builder(this, binding.photoEditorView)
             .setPinchTextScalable(true)
@@ -49,13 +60,12 @@ class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener {
             .setDefaultEmojiTypeface(mEmojiTypeFace)
             .build()
         //mPhotoEditor.setOnPhotoEditorListener(this)
-        //mPhotoEditor.setBrushDrawingMode(true)
+
         Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show()
 
+        mEmojiBSFragment.setEmojiListener(this)
+
         binding.addText.setOnClickListener {
-            //binding.addEditText.visibility = View.VISIBLE
-            //var text: String = binding.addEditText.text.toString()
-            //mPhotoEditor.addText(text, R.color.blue_color_picker)
             val textEditorDialogFragment = TextEditorDialogFragment.show(this)
             textEditorDialogFragment.setOnTextEditorListener(object: TextEditorDialogFragment.TextEditor{
                 override fun onDone(inputText: String, colorCode: Int) {
@@ -64,39 +74,42 @@ class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener {
             })
         }
 
-        //mPhotoEditor.setOnPhotoEditorListener(this)
-        /*mPhotoEditor.setOnPhotoEditorListener(object : OnPhotoEditorListener{
-            override fun onEditTextChangeListener(rootView: View?, text: String?, colorCode: Int) {
-                if (rootView != null) {
-                    mPhotoEditor.editText(rootView, text, colorCode)
-                }
-            }
+        binding.addEmoji.setOnClickListener {
+            //val emojiList: ArrayList<String> = PhotoEditor.getEmojis(getActivity(this))
+            //mPhotoEditor.addEmoji(mEmojiTypeFace, emojiList[0])
+            mEmojiBSFragment.show(supportFragmentManager, mEmojiBSFragment.tag)
+        }
 
-            override fun onStartViewChangeListener(viewType: ViewType?) {
-                TODO("Not yet implemented")
-            }
+        mFilterAdapter = FilterAdapter(this)
+        binding.rvFilter.adapter = mFilterAdapter
+        binding.addFilter.setOnClickListener {
+            binding.rvFilter.visibility = View.VISIBLE
+            binding.close.visibility = View.VISIBLE
+        }
 
-            override fun onRemoveViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
-                TODO("Not yet implemented")
-            }
+        binding.close.setOnClickListener {
+            binding.rvFilter.visibility = View.GONE
+            binding.close.visibility = View.GONE
+        }
 
-            override fun onAddViewListener(viewType: ViewType?, numberOfAddedViews: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onStopViewChangeListener(viewType: ViewType?) {
-                TODO("Not yet implemented")
-            }
-        })*/
     }
 
+    fun makeFullScreen() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+    }
 
     override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int){
         val textEditorDialogFragment = TextEditorDialogFragment.show(this, text, colorCode)
         textEditorDialogFragment.setOnTextEditorListener(object : TextEditorDialogFragment.TextEditor {
 
             override fun onDone(inputText: String, colorCode: Int) {
+                Log.i("Check", "0000000000000")
                 mPhotoEditor.editText(rootView, inputText, colorCode)
+                Log.i("Check", "11111111111")
             }
         })
     }
@@ -115,6 +128,10 @@ class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener {
 
     override fun onStopViewChangeListener(viewType: ViewType?) {
         TODO("Not yet implemented")
+    }
+
+    override fun onEmojiClick(emojiUnicode: String) {
+        mPhotoEditor.addEmoji(mEmojiTypeFace, emojiUnicode)
     }
 
     fun insert_to_database(image_file : File){
@@ -140,4 +157,10 @@ class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener {
         builder.show()
         return
     }
+
+    override fun onFilterSelected(photoFilter: PhotoFilter?) {
+        mPhotoEditor.setFilterEffect(photoFilter)
+    }
+
+
 }

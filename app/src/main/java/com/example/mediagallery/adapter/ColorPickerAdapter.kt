@@ -27,16 +27,8 @@ class ColorPickerAdapter : RecyclerView.Adapter<ColorPickerAdapter.ViewHolder>{
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = inflater.inflate(R.layout.color_picker_item_list, parent, false)
+        val view = inflater.inflate(R.layout.photo_editor_color_picker_item_list, parent, false)
         return ViewHolder(view)
-
-    }
-    class ViewHolder : RecyclerView.ViewHolder{
-        var colorPickerView : View
-        constructor(view: View) : super(view) {
-            colorPickerView = view.findViewById(R.id.color_picker_view)
-
-        }
     }
 
     companion object{
@@ -48,15 +40,20 @@ class ColorPickerAdapter : RecyclerView.Adapter<ColorPickerAdapter.ViewHolder>{
             colorPickerColors.add(ContextCompat.getColor(context, R.color.orange_color_picker))
             colorPickerColors.add(ContextCompat.getColor(context, R.color.red_color_picker))
             colorPickerColors.add(ContextCompat.getColor(context, R.color.black))
-            colorPickerColors.add(ContextCompat.getColor(context, R.color.red_color_picker))
+            colorPickerColors.add(ContextCompat.getColor(context, R.color.red_orange_color_picker))
+            colorPickerColors.add(ContextCompat.getColor(context, R.color.sky_blue_color_picker))
+            colorPickerColors.add(ContextCompat.getColor(context, R.color.violet_color_picker))
+            colorPickerColors.add(ContextCompat.getColor(context, R.color.white))
+            colorPickerColors.add(ContextCompat.getColor(context, R.color.yellow_color_picker))
+            colorPickerColors.add(ContextCompat.getColor(context, R.color.yellow_green_color_picker))
             return colorPickerColors
 
         }
     }
 
-    interface OnColorPickerClickListener{
+    /*interface OnColorPickerClickListener{
         fun onColorPickerClickListener(colorCode: Int)
-    }
+    }*/
 
     override fun getItemCount(): Int {
         return colorPickerColors.size
@@ -66,8 +63,15 @@ class ColorPickerAdapter : RecyclerView.Adapter<ColorPickerAdapter.ViewHolder>{
         holder.colorPickerView.setBackgroundColor(colorPickerColors.get(position))
 
         holder.colorPickerView.setOnClickListener {
-            if(onColorPickerClickListener!=null)
-                onColorPickerClickListener(colorPickerColors[position])
+            onColorPickerClickListener(colorPickerColors[position])
+        }
+    }
+
+    class ViewHolder : RecyclerView.ViewHolder{
+        var colorPickerView : View
+        constructor(view: View) : super(view) {
+            colorPickerView = view.findViewById(R.id.color_picker_view)
+
         }
     }
 }
