@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
@@ -23,6 +22,7 @@ import com.example.mediagallery.CustomGalleryActivity
 import com.example.mediagallery.R
 import com.example.mediagallery.databinding.CameraBinding
 import com.example.mediagallery.model.GalleryPicture
+import com.example.mediagallery.photoEditor.PreviewActivity
 import com.example.mediagallery.viewmodel.ImageViewModel
 import com.google.android.material.textfield.TextInputLayout
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
@@ -195,6 +195,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
                     viewFinder.post {
                         val intent = intent()
                         intent.putExtra("uri", file.absolutePath)
+                        intent.putExtra("file", file)
                         startActivity(intent)
 
                         //insert_to_database(file)

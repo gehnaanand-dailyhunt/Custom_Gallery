@@ -1,4 +1,4 @@
-package com.example.mediagallery.camera
+package com.example.mediagallery.photoEditor.fragment
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -71,7 +71,9 @@ class EmojiBSFragment() : BottomSheetDialogFragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             //emojiList = PhotoEditor.getEmojis(parent.context)
             val view: View = LayoutInflater.from(parent.context).inflate(R.layout.photo_editor_row_emoji, parent, false)
-            return ViewHolder(view)
+            return ViewHolder(
+                view
+            )
         }
 
         override fun getItemCount(): Int {

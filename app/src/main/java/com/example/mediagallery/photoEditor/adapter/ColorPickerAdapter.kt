@@ -1,4 +1,4 @@
-package com.example.mediagallery.adapter
+package com.example.mediagallery.photoEditor.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -22,13 +22,18 @@ class ColorPickerAdapter : RecyclerView.Adapter<ColorPickerAdapter.ViewHolder>{
     constructor(@NonNull context: Context){
         this.context = context
         this.inflater = LayoutInflater.from(context)
-        this.colorPickerColors = getDefaultColors(context)
+        this.colorPickerColors =
+            getDefaultColors(
+                context
+            )
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = inflater.inflate(R.layout.photo_editor_color_picker_item_list, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(
+            view
+        )
     }
 
     companion object{

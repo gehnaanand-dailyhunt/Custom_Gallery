@@ -1,4 +1,4 @@
-package com.example.mediagallery.camera
+package com.example.mediagallery.photoEditor.fragment
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -19,7 +19,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mediagallery.R
-import com.example.mediagallery.adapter.ColorPickerAdapter
+import com.example.mediagallery.photoEditor.adapter.ColorPickerAdapter
+
 //import com.example.mediagallery.databinding.AddTextDialogBinding
 
 class TextEditorDialogFragment : DialogFragment() {
@@ -50,7 +51,10 @@ class TextEditorDialogFragment : DialogFragment() {
         val addTextColorPickerRecyclerView = view.findViewById<RecyclerView>(R.id.add_text_color_picker_recycler_view)
         addTextColorPickerRecyclerView.layoutManager = linearLayoutManager
         addTextColorPickerRecyclerView.setHasFixedSize(true)
-        val colorPickerAdapter = ColorPickerAdapter(activity!!)
+        val colorPickerAdapter =
+            ColorPickerAdapter(
+                activity!!
+            )
 
         colorPickerAdapter.setOnColorPickerClickListener { colorCode ->
             mColorCode = colorCode
@@ -104,18 +108,25 @@ class TextEditorDialogFragment : DialogFragment() {
         var EXTRA_INPUT_TEXT: String = "extra_input_text"
         var EXTRA_COLOR_CODE: String = "extra_color_code"
         var TAG = TextEditorDialogFragment.javaClass.simpleName
-        fun show(@NonNull appCompatActivity: AppCompatActivity, @NonNull inputText: String, @ColorInt colorCode: Int) : TextEditorDialogFragment{
+        fun show(@NonNull appCompatActivity: AppCompatActivity, @NonNull inputText: String, @ColorInt colorCode: Int) : TextEditorDialogFragment {
             val args: Bundle = Bundle()
             args.putString(EXTRA_INPUT_TEXT, inputText)
             args.putInt(EXTRA_COLOR_CODE, colorCode)
-            val textEditorDialogFragment = TextEditorDialogFragment()
+            val textEditorDialogFragment =
+                TextEditorDialogFragment()
             textEditorDialogFragment.arguments = args
-            textEditorDialogFragment.show(appCompatActivity.supportFragmentManager, TAG)
+            textEditorDialogFragment.show(appCompatActivity.supportFragmentManager,
+                TAG
+            )
             return textEditorDialogFragment
         }
 
-        fun show(@NonNull appCompatActivity: AppCompatActivity) : TextEditorDialogFragment{
-            return show(appCompatActivity, "", ContextCompat.getColor(appCompatActivity, R.color.white))
+        fun show(@NonNull appCompatActivity: AppCompatActivity) : TextEditorDialogFragment {
+            return show(
+                appCompatActivity,
+                "",
+                ContextCompat.getColor(appCompatActivity, R.color.white)
+            )
         }
     }
 }

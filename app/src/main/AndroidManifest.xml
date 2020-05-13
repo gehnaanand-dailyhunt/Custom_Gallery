@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".videoPlayer.VideoPlayerActivity"/>
-        <activity android:name=".camera.PreviewActivity"/>
+        <activity android:name=".photoEditor.PreviewActivity"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.mediagallery.adapter
+package com.example.mediagallery.photoEditor.adapter
 
 import android.content.Context
 import android.graphics.Bitmap
