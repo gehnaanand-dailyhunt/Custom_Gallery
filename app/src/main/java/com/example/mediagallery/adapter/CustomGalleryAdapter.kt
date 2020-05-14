@@ -75,6 +75,8 @@ class CustomGalleryAdapter : ListAdapter<GalleryPicture, ImageViewHolder2>(Galle
         val index = uri.lastIndexOf(".")
         if(index > 0 && uri.substring(index) == ".mp4")
             holder.play_button.visibility = View.VISIBLE
+        else
+            holder.play_button.visibility = View.GONE
 
         Glide.with(holder.imageView)
             .load(galleryPicture.contentUri)

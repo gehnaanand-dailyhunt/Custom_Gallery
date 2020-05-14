@@ -99,6 +99,8 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
         val index = uri.lastIndexOf(".")
         if(index > 0 && uri.substring(index) == ".mp4")
             holder.play_button.visibility = View.VISIBLE
+        else
+            holder.play_button.visibility = View.GONE
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
