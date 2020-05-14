@@ -26,6 +26,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.mediagallery.CustomGalleryActivity
 import com.example.mediagallery.R
 import com.example.mediagallery.camera.Camera
 import com.example.mediagallery.databinding.ActivityPreviewBinding
@@ -132,6 +133,10 @@ open class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener, EmojiBSF
         binding.redo.setOnClickListener {
             mPhotoEditor.redo()
         }
+
+        binding.eraser.setOnClickListener {
+            mPhotoEditor.brushEraser()
+        }
     }
 
     fun saveImage(){
@@ -237,7 +242,7 @@ open class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener, EmojiBSF
                 dialog.dismiss()
                 showLoading("Saving...")
                 showSnackbar("Image saved successfully")
-                startActivity(Intent(this, Camera::class.java))
+                startActivity(Intent(this, CustomGalleryActivity::class.java))
                 Toast.makeText(this, title+" "+ date, Toast.LENGTH_SHORT).show()
 
             }

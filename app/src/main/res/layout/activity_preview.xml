@@ -47,8 +47,16 @@
         android:layout_below="@+id/add_filter"
         android:layout_alignLeft="@+id/add_text"
         android:src="@drawable/ic_action_brush"
-        android:layout_marginTop="20dp"
-        tools:listitem = "@layout/photo_editor_row_filter"/>
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:id="@+id/eraser"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/add_brush"
+        android:layout_alignLeft="@+id/add_text"
+        android:src="@drawable/ic_eraser"
+        android:layout_marginTop="20dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFilter"
@@ -70,13 +78,17 @@
         android:layout_marginStart="10dp"
         android:src="@drawable/ic_action_close"/>
 
-    <ImageView
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/save"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_toEndOf="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_action_save"
-        android:layout_marginStart="10dp"/>
+        android:backgroundTint="#b5364e"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd = "30dp"
+        android:layout_marginBottom="70dp"
+        app:rippleColor="@android:color/white"/>
 
     <ImageView
         android:id="@+id/redo"
