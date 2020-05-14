@@ -19,11 +19,13 @@ import com.example.mediagallery.R
 import com.example.mediagallery.flickr.model.Photo
 import com.example.mediagallery.flickr.viewmodel.PhotosViewModel
 import com.example.mediagallery.model.GalleryPicture
+import com.example.mediagallery.photoEditor.PreviewActivity
 import com.example.mediagallery.videoPlayer.VideoPlayerActivity
 import com.example.mediagallery.viewmodel.GalleryViewModel
 import com.example.mediagallery.viewmodel.ImageViewModel
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.post_list_item.*
+import java.io.File
 
 
 class ScreenSlidePagerActivity : AppCompatActivity() {
@@ -63,6 +65,15 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                         intent.putExtra("uri",uri)
                         startActivity(intent)
                     }
+
+                    screenSlidePagerAdapter.setOnClickListenerEdit { uri ->
+                        val file = File(externalMediaDirs.first(),
+                            "${System.currentTimeMillis()}.jpg")
+                        val intent = Intent(this, PreviewActivity::class.java)
+                        intent.putExtra("uri", uri)
+                        intent.putExtra("file", file)
+                        startActivity(intent)
+                    }
                 })
 
             }
@@ -78,6 +89,14 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                         screenSlidePagerAdapter.setOnClickListenerVideo { uri ->
                             val intent = Intent(this, VideoPlayerActivity::class.java)
                             intent.putExtra("uri", uri)
+                            startActivity(intent)
+                        }
+                        screenSlidePagerAdapter.setOnClickListenerEdit { uri ->
+                            val file = File(externalMediaDirs.first(),
+                                "${System.currentTimeMillis()}.jpg")
+                            val intent = Intent(this, PreviewActivity::class.java)
+                            intent.putExtra("uri", uri)
+                            intent.putExtra("file", file)
                             startActivity(intent)
                         }
                     }
@@ -98,6 +117,15 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
 
+                    screenSlidePagerAdapter.setOnClickListenerEdit { uri ->
+                        val file = File(externalMediaDirs.first(),
+                            "${System.currentTimeMillis()}.jpg")
+                        val intent = Intent(this, PreviewActivity::class.java)
+                        intent.putExtra("uri", uri)
+                        intent.putExtra("file", file)
+                        startActivity(intent)
+                    }
+
                 })
             }
             //Flickr Activity
@@ -111,6 +139,15 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                     screenSlidePagerAdapter.setOnClickListenerLike { image ->
                         photosViewModel.insert(image)
                         photosViewModel.update(image)
+                    }
+
+                    screenSlidePagerAdapter.setOnClickListenerEdit { uri ->
+                        val file = File(externalMediaDirs.first(),
+                            "${System.currentTimeMillis()}.jpg")
+                        val intent = Intent(this, PreviewActivity::class.java)
+                        intent.putExtra("uri", uri)
+                        intent.putExtra("file", file)
+                        startActivity(intent)
                     }
 
                 })

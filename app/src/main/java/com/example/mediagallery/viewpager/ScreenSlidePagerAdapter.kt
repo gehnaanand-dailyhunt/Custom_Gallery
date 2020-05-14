@@ -18,8 +18,9 @@ import okio.blackholeSink
 class ScreenSlidePagerAdapter(private val context: Context, private val galleryPicture: List<GalleryPicture>) : RecyclerView.Adapter<ImageViewHolder>()
 {
     private lateinit var onClickLike : (GalleryPicture) -> Unit
-    private lateinit var onClickLike2 : (GalleryPicture) -> Unit
+    //private lateinit var onClickLike2 : (GalleryPicture) -> Unit
     private lateinit var onClickPlay : (String) -> Unit
+    private lateinit var onClickEdit : (String) -> Unit
 
     //var flag = 0
 
@@ -29,6 +30,9 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
         this.onClickLike = onClick
     }
 
+    fun setOnClickListenerEdit(onClick: (String) -> Unit) {
+        this.onClickEdit = onClick
+    }
     /*fun setOnClickListenerLike2(onClick: (GalleryPicture) -> Unit){
         flag = 1
         this.onClickLike2 = onClick
@@ -83,6 +87,9 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
             }*/
         }
 
+        holder.edit.setOnClickListener {
+            onClickEdit(image.contentUri)
+        }
 
         Glide.with(holder.imageView)
             .load(image.contentUri)
@@ -113,4 +120,5 @@ class ImageViewHolder(override val containerView: View) : RecyclerView.ViewHolde
     val image_tags: TextView = containerView.findViewById(R.id.tags)
     val image_like: ImageView = containerView.findViewById(R.id.like)
     val play_button: ImageButton = containerView.findViewById(R.id.play_button)
+    val edit: ImageButton = containerView.findViewById(R.id.edit)
 }

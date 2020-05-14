@@ -111,7 +111,8 @@ open class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener, EmojiBSF
 
         binding.close.setOnClickListener {
             binding.rvFilter.visibility = View.GONE
-            binding.close.visibility = View.GONE
+            showSaveDialog()
+            //binding.close.visibility = View.GONE
         }
 
         binding.save.setOnClickListener {
@@ -265,9 +266,6 @@ open class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener, EmojiBSF
     }
 
     override fun onBackPressed() {
-        if(!mPhotoEditor.isCacheEmpty)
-            showSaveDialog()
-        else
-            super.onBackPressed()
+        showSaveDialog()
     }
 }

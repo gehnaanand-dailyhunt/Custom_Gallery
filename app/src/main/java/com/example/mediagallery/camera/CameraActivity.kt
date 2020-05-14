@@ -72,7 +72,6 @@ class Camera : AppCompatActivity(), LifecycleOwner {
             binding.imageView.setOnClickListener {
                 startActivity(Intent(this, CustomGalleryActivity::class.java))
             }
-
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -245,29 +244,7 @@ class Camera : AppCompatActivity(), LifecycleOwner {
         val intent = Intent(this, PreviewActivity::class.java)
         return intent
     }
-    fun insert_to_database(image_file : File){
-        val custLayout = LayoutInflater.from(this).inflate(R.layout.text_input_dialog,null)
-        val image_title: TextInputLayout = custLayout.findViewById(R.id.title)
-        val image_tag : TextInputLayout = custLayout.findViewById(R.id.tag)
-        val builder = AlertDialog.Builder(this).setView(custLayout)
-            .setPositiveButton("Save"){dialog, _ ->
-                val title = image_title.editText!!.text.toString()
-                val tag = image_tag.editText!!.text.toString()
-                val uri = image_file.absolutePath
-                val date = image_file.lastModified()
-                val galleryPicture = GalleryPicture(0, title, tag, date, uri)
-                viewModel.insert(galleryPicture)
-                dialog.dismiss()
-                Toast.makeText(this, title+" "+ date, Toast.LENGTH_SHORT).show()
 
-            }
-            .setNegativeButton("Cancel"){ dialog, _ ->
-                image_file.delete()
-                dialog.cancel()
-            }
-        builder.show()
-        return
-    }
     private fun updateTransform() {
         val matrix = Matrix()
 
