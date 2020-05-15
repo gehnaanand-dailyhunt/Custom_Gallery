@@ -3,6 +3,7 @@ package com.example.mediagallery.viewpager
 import ZoomOutPageTransformer
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -26,6 +27,8 @@ import com.example.mediagallery.viewmodel.ImageViewModel
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.post_list_item.*
 import java.io.File
+import java.util.*
+import kotlin.Comparator
 
 
 class ScreenSlidePagerActivity : AppCompatActivity() {
@@ -74,6 +77,12 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                         intent.putExtra("file", file)
                         startActivity(intent)
                     }
+                    screenSlidePagerAdapter.setOnClickListenerShare { uri ->
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "image/*"
+                        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri))
+                        startActivity(Intent.createChooser(intent, "Share to"))
+                    }
                 })
 
             }
@@ -81,6 +90,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
             2 -> {
                 imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
                     if(!images.isEmpty()) {
+                        val images = images.sortedByDescending { it.dateTaken }
                         screenSlidePagerAdapter = ScreenSlidePagerAdapter(this, images)
                         viewPager.adapter = screenSlidePagerAdapter
                         screenSlidePagerAdapter.setOnClickListenerLike { image ->
@@ -98,6 +108,13 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                             intent.putExtra("uri", uri)
                             intent.putExtra("file", file)
                             startActivity(intent)
+                        }
+
+                        screenSlidePagerAdapter.setOnClickListenerShare { uri ->
+                            val intent = Intent(Intent.ACTION_SEND)
+                            intent.type = "image/*"
+                            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri))
+                            startActivity(Intent.createChooser(intent, "Share to"))
                         }
                     }
                 })
@@ -124,6 +141,13 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
                         intent.putExtra("uri", uri)
                         intent.putExtra("file", file)
                         startActivity(intent)
+                    }
+
+                    screenSlidePagerAdapter.setOnClickListenerShare { uri ->
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "image/*"
+                        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri))
+                        startActivity(Intent.createChooser(intent, "Share to"))
                     }
 
                 })
@@ -197,6 +221,21 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }*/
 
+    /*fun sort(images: List<GalleryPicture>) : Int{
+        Collections.sort(images, object : Comparator<GalleryPicture> {
+            override fun compare(o1: GalleryPicture?, o2: GalleryPicture?): Int {
+                if (o1 != null) {
+                    if (o2 != null) {
+                        if (o1.dateTaken < o2.dateTaken) {
+                            return -1
+                        } else
+                            return 1
+                    }
+                }
+            }
+
+        }) : Int
+    }*/
     fun setInitialPos() {
         val pos: Int = intent.getIntExtra("position", 0)
         if(pos!= 0) {

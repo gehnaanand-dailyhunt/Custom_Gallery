@@ -21,6 +21,7 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
     //private lateinit var onClickLike2 : (GalleryPicture) -> Unit
     private lateinit var onClickPlay : (String) -> Unit
     private lateinit var onClickEdit : (String) -> Unit
+    private lateinit var onClickShare : (String) -> Unit
 
     //var flag = 0
 
@@ -40,6 +41,11 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
     fun setOnClickListenerVideo(onClick: (String) -> Unit){
         this.onClickPlay = onClick
     }
+
+    fun setOnClickListenerShare(onClick: (String) -> Unit){
+        this.onClickShare = onClick
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
         val holder =  ImageViewHolder(
@@ -91,6 +97,10 @@ class ScreenSlidePagerAdapter(private val context: Context, private val galleryP
             onClickEdit(image.contentUri)
         }
 
+        holder.share.setOnClickListener {
+            onClickShare(image.contentUri)
+        }
+
         Glide.with(holder.imageView)
             .load(image.contentUri)
             .into(holder.imageView)
@@ -123,4 +133,5 @@ class ImageViewHolder(override val containerView: View) : RecyclerView.ViewHolde
     val image_like: ImageView = containerView.findViewById(R.id.like)
     val play_button: ImageButton = containerView.findViewById(R.id.play_button)
     val edit: ImageButton = containerView.findViewById(R.id.edit)
+    val share: ImageButton = containerView.findViewById(R.id.share)
 }
