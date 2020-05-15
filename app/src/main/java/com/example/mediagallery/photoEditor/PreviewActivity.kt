@@ -72,7 +72,7 @@ open class PreviewActivity : AppCompatActivity(),OnPhotoEditorListener, EmojiBSF
             .into(binding.photoEditorView.source)
 
         val mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium)
-        mEmojiTypeFace = Typeface.createFromAsset(assets, "NotoColorEmoji.ttf")
+        mEmojiTypeFace = Typeface.createFromAsset(assets, "emojione-android.ttf")
 
         mPhotoEditor = PhotoEditor.Builder(this, binding.photoEditorView)
             .setPinchTextScalable(true)

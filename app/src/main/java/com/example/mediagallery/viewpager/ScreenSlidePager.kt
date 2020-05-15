@@ -90,7 +90,7 @@ class ScreenSlidePagerActivity : AppCompatActivity() {
             2 -> {
                 imageViewModel.allPhotos.observe(this, Observer<List<GalleryPicture>>{ images ->
                     if(!images.isEmpty()) {
-                        val images = images.sortedByDescending { it.dateTaken }
+                        //val images = images.sortedByDescending { it.dateTaken }
                         screenSlidePagerAdapter = ScreenSlidePagerAdapter(this, images)
                         viewPager.adapter = screenSlidePagerAdapter
                         screenSlidePagerAdapter.setOnClickListenerLike { image ->

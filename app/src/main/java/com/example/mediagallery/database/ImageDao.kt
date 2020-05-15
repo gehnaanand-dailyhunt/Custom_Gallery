@@ -12,10 +12,10 @@ interface ImageDao{
     @Query("SELECT * from image_table WHERE id = :id")
     fun get(id: Long): GalleryPicture?
 
-    @Query("SELECT * from image_table WHERE tag IS NOT NULL")
+    @Query("SELECT * from image_table WHERE tag IS NOT NULL ORDER BY dateTaken DESC")
     fun getImages(): LiveData<List<GalleryPicture>>
 
-    @Query("SELECT * from image_table where isLiked = 1")
+    @Query("SELECT * from image_table where isLiked = 1 ORDER BY dateTaken DESC")
     fun getLiked(): LiveData<List<GalleryPicture>>
 
     @Update
